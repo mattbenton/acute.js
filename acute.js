@@ -472,7 +472,7 @@
 
   function Scope () {
     this.$id = nextUid();
-    this.$watcher = new Watcher();
+    this.$watcher = new Watcher().poll(100);
 
     this.$childHead = null;
     this.$childTail = null;
