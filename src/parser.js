@@ -4,6 +4,46 @@
 * TODO: cache constant values as return type
 */
 
+/* jshint evil: true */
+
+acute.createGetter = createGetter;
+var GETTER_EXPR_CACHE = {};
+
+function createGetter ( expr ) {
+  var cached = GETTER_EXPR_CACHE[expr];
+  if ( cached ) {
+    return cached;
+  }
+
+  var parts = expr.split(".");
+  var buffer = "ctx";
+  var exprs = [buffer];
+  var indices;
+
+  function replaceIndex ( line, index ) {
+    indices.push(index);
+    return "";
+  }
+
+  while ( parts.length ) {
+    var part = parts.shift();
+    indices = [];
+    part = part.replace(/\[(.+?)\]/g, replaceIndex);
+    buffer += "." + part;
+    exprs.push(buffer);
+
+    while ( indices.length ) {
+      var index = indices.shift();
+      buffer += "[" + index + "]";
+      exprs.push(buffer);
+    }
+  }
+
+  var getFn = new Function("ctx, def", "return " + exprs.join(" && ") + " || def");
+  GETTER_EXPR_CACHE[expr] = getFn;
+  return getFn;
+}
+
 var parseExpr = acute.parseExpr = (function () {
   var digitRegExp = /\d/;
   var propStartRegExp = /[a-z_$]/i;
@@ -193,6 +233,7 @@ var parseExpr = acute.parseExpr = (function () {
 
       var assignFn = transformed.hasAssign && function ( prop, value ) {
         assignValue(context, prop, value);
+        notifyChange(context, prop, compiledFn.onUpdate);
       };
 
       return compiledExprFn(getFn, execFn, assignFn);

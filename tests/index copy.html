@@ -1,0 +1,31 @@
+<script src="../src/helpers.js"></script>
+<script src="../src/linkedlist.js"></script>
+<script src="../src/watcher.js"></script>
+<script>
+
+var scope = {
+  user: {
+    name: "Matt",
+    age: 26,
+    gf: {
+      name: "Decca",
+      age: 24
+    }
+  },
+  colors: [
+    { name: "green" },
+    { name: "purple" },
+  ],
+  names: ["Matt", "Decca"],
+  title: "Helloworld"
+};
+
+console.log(JSON.stringify(scope));
+
+var w = new Watcher();
+
+w.watch(scope, "user", function ( changes ) {
+  console.log("changes", changes);
+});
+
+</script>

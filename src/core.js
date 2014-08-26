@@ -66,9 +66,13 @@ var interpolateRegExp = /\{\{\s*([\w\.]+)\s*(?:|(.*))?\}\}/g;
 function interpolateFn ( textNode, scope ) {
   var text = textNode.nodeValue;
 
-  var update = function ( newValue, oldValue ) {
+  var update = function ( changes ) {
+    // console.debug("changes", changes);
     textNode.nodeValue = text.replace(interpolateRegExp, function ( line, prop, filters ) {
-      var result = scope.$eval(prop) || "";
+      var result = scope.$eval(prop);
+      if ( typeof result === "undefined" ) {
+        result = "";
+      }
 
       if ( filters ) {
         buildFilterExpr(filters);
@@ -100,16 +104,16 @@ function buildFilterExpr ( filterStr ) {
   for ( var i = filters.length - 1; i >= 0; i-- ) {
     var filterMatch = filters[i].match(filterRegExp);
     if ( filterMatch ) {
-      console.log(filterMatch);
+      // console.log(filterMatch);
       buffer += "filter('" + filterMatch[1] + "')(";
       if ( filterMatch[2] ) {
-        filterMatch[2].replace(filterArgsRegExp, function ( line, arg ) {
-          console.log(arg);
-        });
+        // filterMatch[2].replace(filterArgsRegExp, function ( line, arg ) {
+        //   console.log(arg);
+        // });
       }
     }
   }
 
   buffer += "input)";
-  console.log(buffer);
+  // console.log(buffer);
 }

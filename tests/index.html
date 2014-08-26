@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+  <body>
+    <div id="app">
+      {{ user.name }}
+      <ul>
+        <li ng-repeat="for item in items">Item2 {{ item.name }} {{ item }}</li>
+      </ul>
+    </div>
+  </body>
+</html>
+<script src="jquery.min.js"></script>
+<script src="../build/acute.js"></script>
+<script>
+var rs;
+function run () {
+  var app = acute.app("app", document.getElementById("#app"));
+  rs = app.rootScope;
+
+  rs.text = "Matt";
+  rs.user = { name: "Matthew Lee Benton" };
+  // rs.items = {
+  //   holly: { name: "Holly" },
+  //   matt: { name: "Matt" }
+  // };
+
+  rs.items = [
+    { name: "Holly" },
+    { name: "Matt" }
+  ];
+
+  rs.$digest();
+}
+
+// var scope = {
+//   item: {
+//     colors: [
+//       0,
+//       1,
+//       [
+//         0, 1, 2, 3, 4,
+//         { age: 24 }
+//       ]
+//     ]
+//   }
+// };
+
+// var get = acute.createGetter("item.colors[2][5].age");
+// console.log(get(scope));
+
+run();
+</script>

@@ -2,65 +2,44 @@
 * Scope
 */
 
+/* jshint evil: true */
+
 var scopeChildListAccessor = new LinkedListAccessor("$childHead", "$childTail", "$prevSibling", "$nextSibling");
 
 function Scope () {
   this.$id = nextUid();
-  this.$watcher = new Watcher().poll(100);
+  this.$watcher = new Watcher();
 
   this.$childHead = null;
   this.$childTail = null;
 }
 
 Scope.prototype.$watch = function ( prop, handler ) {
+  // var evalFn = parseExpr(prop);
+  // console.debug("evalFn", evalFn);
+  // console.debug("scope watch", prop);
   this.$watcher.watch(this, prop, handler);
 };
 
 Scope.prototype.$digest = function () {
-  this.$watcher.digest();
+  var didChange = false;
+  if ( this.$watcher.digest() ) {
+    didChange = true;
+  }
 
   var child = this.$childHead;
   while ( child !== null ) {
-    child.$digest();
+    if ( child.$digest() ) {
+      didChange = true;
+    }
     child = child.$nextSibling;
   }
+
+  return didChange;
 };
 
 Scope.prototype.$eval = function ( expr ) {
-  var result = parseExpr(expr)(this);
-
-  return result;
-  // var code = prop.replace(/([a-z_$]+[a-z0-9_$]*)/gi, "this.$1");
-  // return eval(code);
-
-  var methodMatch = expr.match(/^\s*(?:\$\.)([\w\.]+)\((.*?)\)\s*$/);
-  if ( methodMatch ) {
-    var method = methodMatch[1];
-    var args = methodMatch[2];
-
-    if ( isFunction(this[method]) ) {
-      // Method exists somewhere in prototype.
-      // fn();
-
-      var fn = new Function("$", expr);
-      fn(this);
-
-      // Find the scope on which it exists.
-      var current = this;
-      while ( current && !current.hasOwnProperty(method) ) {
-        current = current.$parent;
-      }
-
-      console.debug("method " + method + ", exists on", current);
-      if ( current ) {
-        current.$digest();
-      }
-    }
-  } else {
-    var code = expr.replace(/([\w\.]+)/gi, "this.$1");
-    console.log("eval", expr, code);
-    return eval(code);
-  }
+  return parseExpr(expr)(this);
 };
 
 Scope.prototype.$new = function ( isolate ) {

@@ -2,6 +2,8 @@
 * LinkedListAccessor
 */
 
+/* jshint evil: true */
+
 function LinkedListAccessor ( head, tail, prev, next ) {
   // item.prev = item.next = null;
   // if ( !head ) { head = item; }
@@ -21,4 +23,10 @@ function LinkedListAccessor ( head, tail, prev, next ) {
   // if ( item === tail ) { tail = item.prev; }
   // item.prev = item.next = null;
   this.remove = new Function("o, i", "if ( i." + prev + " ) { i." + prev + "." + next + " = i" + "." + next + "; } if ( i." + next + " ) { i." + next + "." + prev + " = i." + prev + "; } if ( i === o." + head + " ) { o." + head + " = i." + next + "; } if ( i === o." + tail + " ) { o." + tail + " = i." + prev + "; } i. " + prev + " = i." + next + " = null;");
+
+  // replace.prev = item.prev;
+  // replace.next = item.next;
+  // if ( replace.next)
+
+  // this.replace = new Function("o, i, r");
 }
