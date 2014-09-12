@@ -1,52 +1,21 @@
 <!doctype html>
 <html>
-  <body>
-    <div id="app">
-      {{ user.name }}
-      <ul>
-        <li ng-repeat="for item in items">Item2 {{ item.name }} {{ item }}</li>
-      </ul>
-    </div>
-  </body>
+<head>
+</head>
+<body>
+  <button id="init-button" onclick="init()">Init app in Internet Explorer</button>
+  <div id="app">
+    <!-- My name { name } and I am <b>{ age }</b> years old!<br/>
+    My girlfriend is { gf.name }. -->
+
+    <ul ac-show="show">
+      <li ac-each-item="items">My item is { item }</li>
+    </ul>
+  </div>
+  <script src="polyfills.js"></script>
+  <script src="acute.js"></script>
+  <script src="sightglass.js"></script>
+  <script src="observable.js"></script>
+  <script src="main.js"></script>
+</body>
 </html>
-<script src="jquery.min.js"></script>
-<script src="../build/acute.js"></script>
-<script>
-var rs;
-function run () {
-  var app = acute.app("app", document.getElementById("#app"));
-  rs = app.rootScope;
-
-  rs.text = "Matt";
-  rs.user = { name: "Matthew Lee Benton" };
-  // rs.items = {
-  //   holly: { name: "Holly" },
-  //   matt: { name: "Matt" }
-  // };
-
-  rs.items = [
-    { name: "Holly" },
-    { name: "Matt" }
-  ];
-
-  rs.$digest();
-}
-
-// var scope = {
-//   item: {
-//     colors: [
-//       0,
-//       1,
-//       [
-//         0, 1, 2, 3, 4,
-//         { age: 24 }
-//       ]
-//     ]
-//   }
-// };
-
-// var get = acute.createGetter("item.colors[2][5].age");
-// console.log(get(scope));
-
-run();
-</script>
