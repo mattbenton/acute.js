@@ -10,19 +10,15 @@ acute.directives["class"] = (function () {
 
   directive.bind = function ( element, attr, scope ) {
     var expr = attr.value || attr.nodeValue;
-
     var evalFn = acute.parser.parse(expr);
-    acute.trace.d("class", expr, evalFn);
-
-    // var $el = $(element);
-    // scope.watch(expr, function ( change ) {
-    //   acute.trace.d("change class", change);
-    //   // if ( change.value ) {
-    //   //   $el.html(change.value);
-    //   // } else {
-    //   //   $el.html('');
-    //   // }
-    // });
+    var $el = $(element);
+    scope.watch(evalFn.watches, function ( change ) {
+      var classes = evalFn(scope);
+      acute.trace.d("classes", classes);
+      for ( var klass in classes ) {
+        $el.toggleClass(klass, Boolean(classes[klass]));
+      }
+    });
   };
 
   directive.unbind = function ( element ) {
