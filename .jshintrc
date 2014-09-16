@@ -1,0 +1,20 @@
+{
+  "globals": {
+    "$": true,
+    "acute": true,
+    "extend": true,
+    "isPlainObject": true,
+    "isArray": true,
+    "isFunction": true,
+    "getType": true,
+    "Observer": true,
+    "Scope": true,
+    "ELEMENT_NODE": true,
+    "TEXT_NODE": true,
+    "bindDirectives": true,
+    "interpolateTextNode": true
+  },
+  "undef": true,
+  "browser": true,
+  "devel": true
+}

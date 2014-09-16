@@ -9,26 +9,9 @@ var arrayClass = "[object Array]";
 var functionClass = "[object Function]";
 var toString = Object.prototype.toString;
 
-acute.getType = getType;
-function getType ( value ) {
-  if ( value === null ) {
-    return "null";
-  }
-
-  var type = typeof value;
-  if ( type === "object" ) {
-    if ( isPlainObject(value) ) { return "object"; }
-    if ( isArray(value) ) { return "array"; }
-    return "complex";
-  }
-  return type;
-}
-
 acute.isPlainObject = isPlainObject;
 function isPlainObject ( value ) {
-  return value && typeof value == "object" &&
-    toString.call(value) == objectClass &&
-    !isArray(value) && value.constructor === Object;
+  return value && typeof value == "object" && toString.call(value) == objectClass && !isArray(value);
 }
 
 acute.isArray = isArray;
@@ -94,24 +77,7 @@ function extend ( target ) {
   return target;
 }
 
-var bindFn;
-if ( Function.prototype.bind ) {
-  bindFn = function ( fn, thisArg ) {
-    return fn.bind(thisArg);
-  };
-} else {
-  bindFn = function ( fn, thisArg ) {
-    return function () {
-      fn.apply(thisArg, Array.prototype.slice.call(arguments));
-    };
-  };
-}
-acute.bindFn = bindFn;
-
 var UNIQUE_ID_COUNT = 0;
 function nextUid () {
   return "$" + UNIQUE_ID_COUNT++;
 }
-
-// No operation
-function noOp () {}

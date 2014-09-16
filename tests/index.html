@@ -1,21 +1,36 @@
 <!doctype html>
 <html>
 <head>
+  <!--[if lte IE 9]>
+  <script type="text/javascript" src="https://getfirebug.com/releases/lite/1.3/firebug-lite.js#startOpened=true"></script>
+  <![endif]-->
 </head>
 <body>
+  <!--[if lte IE 9]>
   <button id="init-button" onclick="init()">Init app in Internet Explorer</button>
-  <div id="app">
-    <!-- My name { name } and I am <b>{ age }</b> years old!<br/>
-    My girlfriend is { gf.name }. -->
+  <![endif]-->
 
-    <ul ac-show="show">
-      <li ac-each-item="items">My item is { item }</li>
+  <div id="app">
+    <!-- <div ac-show="view == 'offer'">
+      Offer view { name }
+    </div>
+    <div ac-show="view == 'conditions'">
+      Conditions is { gf.name }
+    </div> -->
+
+    <button ac-click="update()">Update</button>
+    <button ac-click="remove()">Remove</button>
+
+    <ul>
+      <li ac-repeat="for index, color in colors">Color [{index}]: { color.name }
+        <div ac-repeat="for c in color.colors">This is c { c.name }</div>
+      </li>
     </ul>
+
   </div>
-  <script src="polyfills.js"></script>
-  <script src="acute.js"></script>
-  <script src="sightglass.js"></script>
-  <script src="observable.js"></script>
+
+  <script src="jquery-1.11.1.js"></script>
+  <script src="../build/acute.js"></script>
   <script src="main.js"></script>
 </body>
 </html>

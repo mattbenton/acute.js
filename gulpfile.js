@@ -5,18 +5,22 @@ var uglify = require("gulp-uglify");
 var gzip = require("gulp-gzip");
 var rename = require("gulp-rename");
 var size = require("gulp-size");
+var docco = require("gulp-docco");
+var mox = require("gulp-mox");
 var notify = require("gulp-notify");
 
 var sources = [
+  "src/log.js",
   "src/helpers.js",
   "src/linkedlist.js",
-  "src/app.js",
-  "src/watcher.js",
-  "src/parser.js",
+  "src/observer.js",
   "src/scope.js",
+  "src/view.js",
+  "src/parser.js",
+  "src/core.js",
   "src/directives.js",
-  "src/filters.js",
-  "src/core.js"
+  "src/directives/*.js",
+  "src/polyfills.js"
 ];
 
 gulp.task("lint", function () {
@@ -39,7 +43,16 @@ gulp.task("lint", function () {
     // .pipe(jshint.reporter("fail"));
 });
 
+gulp.task("docs", function () {
+  return gulp.src(sources)
+    .pipe(mox({
+      htmlFile: "docs/html"
+    }))
+    .pipe(gulp.dest("docs"));
+});
+
 gulp.task("build", ["lint"], function () {
+  // Copy source array
   var build = sources.slice(0);
   build.unshift("src/build.prefix.js");
   build.push("src/build.suffix.js");
@@ -48,17 +61,20 @@ gulp.task("build", ["lint"], function () {
     .pipe(concat("acute.js"))
     .pipe(size({ showFiles: true }))
     .pipe(gulp.dest("build"))
-    .pipe(uglify());
+    .pipe(notify("Built: <%= file.relative %>"))
+
+    // .pipe(uglify())
     // .pipe(rename("acute.min.js"))
     // .pipe(size({ showFiles: true }))
     // .pipe(gulp.dest("build"))
-    // // .pipe(gzip())
-    // // .pipe(size({ showFiles: true }))
-    // // .pipe(gulp.dest("build"));
+    // .pipe(gzip())
+    // .pipe(size({ showFiles: true }))
+    // .pipe(gulp.dest("build"))
+    // .pipe(notify("Built: <%= file.relative %>"));
 });
 
 gulp.task("watch", function() {
-  gulp.watch("src/*.js", ["build"]);
+  gulp.watch("src/**/*.js", ["build"]);
 });
 
 gulp.task("default", ["build"]);
