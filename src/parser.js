@@ -199,7 +199,7 @@ acute.parser = (function () {
       else if ( chr === "," && inObject ) {
         isObjectField = true;
         endProperty();
-        // buffer += chr;
+        buffer += chr;
       }
       else if ( !isObjectField && !isProperty && propStartRegExp.test(chr) ) {
         startProperty();
