@@ -188,9 +188,18 @@ acute.parser = (function () {
         isObjectField = true;
         buffer += chr;
       }
+      else if ( chr === "}" ) {
+        inObject = false;
+        buffer += chr;
+      }
       else if ( chr === ":" && isObjectField ) {
         isObjectField = false;
         buffer += chr;
+      }
+      else if ( chr === "," && inObject ) {
+        isObjectField = true;
+        endProperty();
+        // buffer += chr;
       }
       else if ( !isObjectField && !isProperty && propStartRegExp.test(chr) ) {
         startProperty();
@@ -219,14 +228,11 @@ acute.parser = (function () {
 
     acute.trace.p(buffer);
 
-    // buffer = buffer.replace(/get\('([^']+)'\)\s*=[^=]\s*([^;]+)/g, function ( line, prop, value ) {
     buffer = buffer.replace(assignRegExp, function ( line, prop, value ) {
       acute.trace.p(line, prop, value);
       hasSet = true;
       return _set.start + "'" + prop + "', " + value + _set.end;
     });
-
-    // acute.trace.p("transformed", buffer);
 
     var captureOpRegExp = new RegExp(
       "(?:" +
