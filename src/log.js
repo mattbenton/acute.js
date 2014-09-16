@@ -26,7 +26,7 @@ acute.traces = [
     id: "s"
   },
   {
-    enabled: true,
+    // enabled: true,
     name: "parser",
     id: "p"
   }

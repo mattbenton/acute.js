@@ -188,10 +188,6 @@ acute.parser = (function () {
         isObjectField = true;
         buffer += chr;
       }
-      else if ( chr === "}" ) {
-        inObject = false;
-        buffer += chr;
-      }
       else if ( chr === ":" && isObjectField ) {
         isObjectField = false;
         buffer += chr;
@@ -224,12 +220,12 @@ acute.parser = (function () {
     }
 
     var assignRegExp = new RegExp(escapePattern(_get.start) + "'([^']+)'" + escapePattern(_get.end) + "\\s*=[^=]\\s*([^;]+)", "g");
-    acute.trace.p(assignRegExp);
+    acute.trace.p('assignRegExp', assignRegExp);
 
     acute.trace.p(buffer);
 
     buffer = buffer.replace(assignRegExp, function ( line, prop, value ) {
-      acute.trace.p(line, prop, value);
+      acute.trace.p('assign', line, prop, value);
       hasSet = true;
       return _set.start + "'" + prop + "', " + value + _set.end;
     });
@@ -247,6 +243,8 @@ acute.parser = (function () {
     buffer.replace(captureOpRegExp, function ( line, path ) {
       watchedPaths[path] = true;
     });
+
+    acute.trace.p("transformed", buffer);
 
     var watches = [];
     for ( var path in watchedPaths ) {
