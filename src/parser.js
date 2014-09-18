@@ -83,6 +83,8 @@ acute.parser = (function () {
       }
     }
 
+    console.log(source);
+
     var evalFn = new Function("scope, filter", "return (" + source + ")");
     acute.trace.p("compiled " + expr + " --> " + evalFn.toString() + ", watches:", watches);
     cache[expr] = evalFn;
@@ -101,7 +103,7 @@ acute.parser = (function () {
     },
     exec: {
       start: "scope.exec(",
-      end: ")"
+      end: ", "
     }
   };
 
@@ -114,6 +116,30 @@ acute.parser = (function () {
       watchedPaths[watches[i]] = true;
     }
 
+    // for ( i = 0, len = rawFilters.length; i < len; i++ ) {
+    //   var raw = rawFilters[i];
+    //   var nameMatch = raw.match(/^\s*([a-zA-Z$_]+[a-zA-Z0-9$_]*)\s*/);
+    //   if ( nameMatch ) {
+    //     var name = nameMatch[1];
+    //     // Remove name part.
+    //     raw = raw.substr(nameMatch[0].length);
+
+    //     var trans = transform(raw);
+    //     if ( trans && trans.buffer ) {
+    //       // Remove any preceeding comma.
+    //       var buffer = trans.buffer.replace(/^\s*,\s*/, "");
+    //       source = "filter('" + name + "', " + buffer + ", " + source + ")";
+
+    //       for ( j = 0; j < trans.watches.length; j++ ) {
+    //         watchedPaths[trans.watches[i]] = true;
+    //       }
+    //     } else {
+    //       source = "filter('" + name + "', " + source + ")";
+    //     }
+    //   }
+    // }
+
+    var filters = [];
     for ( i = 0, len = rawFilters.length; i < len; i++ ) {
       var raw = rawFilters[i];
       var nameMatch = raw.match(/^\s*([a-zA-Z$_]+[a-zA-Z0-9$_]*)\s*/);
@@ -124,22 +150,26 @@ acute.parser = (function () {
 
         var trans = transform(raw);
         if ( trans && trans.buffer ) {
-          // Remove any preceeding comma.
-          var buffer = trans.buffer.replace(/^\s*,\s*/, "");
-          source = "filter('" + name + "', " + buffer + ", " + source + ")";
+          // Remove any preceeding/trailing whitespace and commas.
+          var buffer = trans.buffer.replace(/^\s*,|,\s*$/, "");
+          filters.push("['" + name + "', [" + buffer + "]]");
 
           for ( j = 0; j < trans.watches.length; j++ ) {
             watchedPaths[trans.watches[i]] = true;
           }
         } else {
-          source = "filter('" + name + "', " + source + ")";
+          filters.push("['" + name + "']");
         }
       }
     }
 
-    watches = [];
-    for ( var path in watchedPaths ) {
-      watches.push(path);
+    if ( filters.length ) {
+      watches = [];
+      for ( var path in watchedPaths ) {
+        watches.push(path);
+      }
+
+      source = "filter([" + filters.join(", ") + "], " + source + ")";
     }
 
     return {
@@ -260,8 +290,9 @@ acute.parser = (function () {
             endProperty(true);
           } else {
             endProperty(false);
+            buffer += chr;
           }
-          buffer += chr;
+          // buffer += chr;
         }
       }
       else if ( !isProperty ) {

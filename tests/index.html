@@ -11,25 +11,10 @@
   <![endif]-->
 
   <div id="app">
-    <!-- <div ac-show="view == 'offer'">
-      Offer view { name }
-    </div>
-    <div ac-show="view == 'conditions'">
-      Conditions is { gf.name }
-    </div> -->
-
-    <button ac-click="update()">Update</button>
-    <button ac-click="remove()">Remove</button>
-
-    <ul>
-      <li ac-repeat="for index, color in colors">Color [{index}]: { color.name }
-        <div ac-repeat="for c in color.colors">This is c { c.name }</div>
-      </li>
-    </ul>
-
+    Hello my name is {user.name} and I was born on { user.dob.getTime }
   </div>
 
-  <script src2="jquery-1.11.1.js"></script>
+  <script src="parser/jquery-1.11.1.js"></script>
   <script src="../build/acute.js"></script>
   <script src="main.js"></script>
 </body>

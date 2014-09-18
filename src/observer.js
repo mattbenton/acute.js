@@ -54,6 +54,13 @@ var Observer = acute.Observer = (function () {
       return;
     }
 
+    if ( isPlainObject(path) ) {
+      for ( var p in path ) {
+        this.watch(p, options, callback);
+      }
+      return;
+    }
+
     var watchHash = getWatchHash(path, options);
     var watch = this.paths[watchHash];
     if ( !watch ) {
@@ -96,7 +103,8 @@ var Observer = acute.Observer = (function () {
     var context = this.locals;
     for ( i = 0, len = keys.length; i < len; i++ ) {
       key = keys[i];
-      if ( typeof context === "object" && context.hasOwnProperty(key) ) {
+      // if ( typeof context === "object" && context.hasOwnProperty(key) ) {
+      if ( typeof context === "object" ) {
         context = context[key];
       } else {
         isBroken = true;
@@ -111,7 +119,8 @@ var Observer = acute.Observer = (function () {
       context = this.context;
       for ( i = 0, len = keys.length; i < len; i++ ) {
         key = keys[i];
-        if ( typeof context === "object" && context.hasOwnProperty(key) ) {
+        // if ( typeof context === "object" && context.hasOwnProperty(key) ) {
+        if ( typeof context === "object" ) {
           context = context[key];
         } else {
           isBroken = true;

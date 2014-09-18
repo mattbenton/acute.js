@@ -34,10 +34,55 @@ function bindDirectives ( node, scope ) {
 * Text node interpolation
 */
 
-// var interpolateRegExp = /\{\s*([\w\.]+)\s*(?:|(.*))?\}/g;
-var interpolateRegExp = /\{\s*(@)?([a-z0-9\._]+)\s*\}/ig;
+// var interpolateRegExp = /\{\s*(@)?([a-z0-9\._]+)\s*\}/ig;
+var interpolateRegExp = /\{\s*(@)?([^}]+)\s*\}/g;
 
 function interpolateTextNode ( node, scope ) {
+  var text = node.nodeValue;
+
+  var watchedPaths = {};
+
+  interpolateRegExp.lastIndex = 0;
+  var stack = [];
+  var index = 0;
+  var match;
+
+  while ( (match = interpolateRegExp.exec(text)) !== null ) {
+    var raw = match[0];
+    var source = match[2];
+    stack.push(text.substr(index, match.index - index));
+
+    var evalFn = acute.parser.parse(source);
+    console.log(evalFn);
+    if ( evalFn ) {
+      for ( var i = 0, len = evalFn.watches.length; i < len; i++ ) {
+        watchedPaths[evalFn.watches[i]] = true;
+      }
+    }
+
+    stack.push(evalFn);
+    index = match.index + raw.length;
+  }
+
+  scope.watch(watchedPaths, function ( change ) {
+    console.log(change);
+    if ( node ) {
+      var output = "";
+      for ( var i = 0, len = stack.length; i < len; i++ ) {
+        var obj = stack[i];
+        if ( typeof obj === "string" ) {
+          output += obj;
+        } else {
+          output += obj(scope, acute.format);
+        }
+      }
+      node.nodeValue = output;
+    }
+  });
+}
+
+
+/*function interpolateTextNode ( node, scope ) {
   var text = node.nodeValue;
 
   var watch = {};
@@ -76,3 +121,4 @@ function interpolateTextNode ( node, scope ) {
     updateFn();
   }
 }
+*/
