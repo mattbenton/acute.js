@@ -1,0 +1,115 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
+  <style>
+  body {
+    padding: 20px;
+  }
+  [data-toggle="button"] {
+    outline: 0 !important;
+  }
+  #input {
+    font-family: monospace;
+  }
+  #buffer { font-family: monospace; }
+  .true { color: #538c48; }
+  .false { color: #ee585c; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <input type="text" id="input" class="form-control" />
+      </div>
+      <div class="panel-footer" id="buffer"></div>
+    </div>
+
+    <div class="panel panel-default">
+    <div class="panel-heading">asdf</div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>index</th>
+            <th>chr</th>
+            <th>isEscaped</th>
+            <th>inString</th>
+            <th>isProperty</th>
+            <th>quoteChr</th>
+            <th>prop</th>
+            <th>buffer</th>
+          </tr>
+        </thead>
+        <tbody id="stack-body">
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  </script>
+  <script src="jquery-1.11.1.js"></script>
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  <script src="whiskers.js"></script>
+  <script src="parser.js"></script>
+  <script>
+    var input = "name = matt, bob = 2";
+    // var input = "name = 'hello'";
+
+    var $input = $("#input").val(input).focus();
+    var $buffer = $("#buffer");
+    var $stackBody = $("#stack-body");
+    // var stackTemplate = $("#stack-template")[0].innerHTML;
+    // console.log(stackTemplate);
+    var stackTemplate = '{for row in stack}<tr>' +
+      '<td>{row.index}</td>' +
+      '<td>{row.chr}</td>' +
+      '<td>{row.isEscaped}</td>' +
+      '<td>{row.inString}</td>' +
+      '<td>{row.isProperty}</td>' +
+      '<td>{row.quoteChr}</td>' +
+      '<td>{row.propBuffer}</td>' +
+      '<td>{row.buffer}</td>' +
+      '</tr>{/for}';
+
+    var context = {
+      stack: []
+    };
+
+    var stack;
+    var lastValue;
+
+    $input.on("keydown, keyup", function ( event ) {
+      update();
+    });
+
+    var parser = new Parser();
+
+    function update () {
+      var index = $input[0].selectionStart;
+      var value = $input.val();
+      // if ( value && value !== lastValue ) {
+        var stack = parser.parse(value, index);
+        if ( stack.length ) {
+          // $buffer.text('▓' + stack[stack.length - 1].buffer + '▓');
+          $buffer.text(stack[stack.length - 1].buffer);
+          if ( stack.length > 8 ) {
+            stack.splice(0, stack.length - 8);
+          }
+          stack.reverse();
+        } else {
+          $buffer.text('""');
+        }
+        context.stack = stack;
+      // } else {
+        // context.stack = [];
+      // }
+      $stackBody.html(whiskers.render(stackTemplate, context));
+    }
+
+    update();
+  </script>
+</body>
+</html>

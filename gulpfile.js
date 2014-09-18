@@ -20,6 +20,8 @@ var sources = [
   "src/core.js",
   "src/directives.js",
   "src/directives/*.js",
+  "src/formatters.js",
+  "src/formatters/*.js",
   "src/polyfills.js"
 ];
 
@@ -44,11 +46,40 @@ gulp.task("lint", function () {
 });
 
 gulp.task("docs", function () {
-  return gulp.src(sources)
-    .pipe(mox({
-      htmlFile: "docs/html"
+  // return gulp.src(sources)
+  // return gulp.src("./tests/parser/parser.js")
+  //   .pipe(mox({
+  //     htmlFile: "docs/html"
+  //   }))
+  //   .pipe(gulp.dest("./tests/parser/docs"));
+
+
+  // var template = {
+  //   path            : "ink-docstrap",
+  //   systemName      : "Something",
+  //   footer          : "Something",
+  //   copyright       : "Something",
+  //   navType         : "vertical",
+  //   theme           : "journal",
+  //   linenums        : true,
+  //   collapseSymbols : false,
+  //   inverseNav      : false
+  // };
+
+  var template = {
+    path: "./tests/parser/jsdoc3-bootstrap-master"
+  };
+
+  return gulp.src("./tests/parser/parser.js")
+    // .pipe(jsdoc("./tests/parser/docs"))
+    .pipe(jsdoc.parser({
+      plugins: ["plugins/markdown"],
+      markdown: {
+        parser: "gfm",
+        hardwrap: true
+      }
     }))
-    .pipe(gulp.dest("docs"));
+    .pipe(jsdoc.generator("./tests/parser/docs", template));
 });
 
 gulp.task("build", ["lint"], function () {

@@ -74,11 +74,16 @@ function init () {
   // });
   // scope.digest();
 
-  view = acute.view(document.getElementById("app"), model);
-  digest = function () {
-    view.scope.digest();
-  };
-  scope = view.scope;
+  // view = acute.view(document.getElementById("app"), model);
+  // digest = function () {
+  //   view.scope.digest();
+  // };
+  // scope = view.scope;
+
+  // console.log(acute.parser.parse("offer.expires"));
+  // console.log(acute.parser.parse("offer.expires | date fred"));
+  // console.log(acute.parser.parse("offer.expires | date { name: 2, age: bob, name: fred, age: 234, 'people': \"matt\" } | bold"));
+  // console.log(acute.parser.parse("offer.expires | date { name: 2, age: age }"));
 }
 
 function parse ( expr ) {

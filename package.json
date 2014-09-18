@@ -34,6 +34,7 @@
     "gulp-concat": "^2.3.4",
     "gulp-docco": "0.0.4",
     "gulp-gzip": "0.0.8",
+    "gulp-jsdoc": "^0.1.4",
     "gulp-jshint": "^1.8.4",
     "gulp-mox": "0.0.3",
     "gulp-notify": "^1.6.0",

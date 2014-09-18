@@ -35,7 +35,7 @@ function bindDirectives ( node, scope ) {
 */
 
 // var interpolateRegExp = /\{\s*([\w\.]+)\s*(?:|(.*))?\}/g;
-var interpolateRegExp = /\{\s*([a-z0-9\._]+)\s*\}/ig;
+var interpolateRegExp = /\{\s*(@)?([a-z0-9\._]+)\s*\}/ig;
 
 function interpolateTextNode ( node, scope ) {
   var text = node.nodeValue;
@@ -43,7 +43,7 @@ function interpolateTextNode ( node, scope ) {
   var watch = {};
   var watchCount = 0;
 
-  var source = ('return "' + text.replace(interpolateRegExp, function ( line, path, filters ) {
+  var source = ('return "' + text.replace(interpolateRegExp, function ( line, isRecursive, path, filters ) {
     watch[path] = true;
     watchCount++;
     acute.trace.i("path", path, line);

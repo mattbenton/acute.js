@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+<head>
+</head>
+<body>
+  <script src2="main.js"></script>
+  <script src="parser.js"></script>
+  <script>
+    b = new Buffer("user.name");
+    console.log(b);
+    // function parse ( input ) {
+    //   var index = 0;
+    //   var length = input.length;
+    //   var output = "";
+
+    //   /**
+    //   * Gets all text from the current index up until `closeChr` is found.
+    //   * This method balances `openChr` and `closeChr`, meaning that a valid
+    //   * match is only returned when there are an equal number of open and close
+    //   *
+    //   * @param {String|null} openChr The open character. Must be different from `closeChr`.
+    //   *        Can be `null` to specify no balancing.
+    //   * @param {String} closeChr The character to match up until.
+    //   * @param {String|null} escapeChr Matching will not end if this character directly preceeds `closeChr`.
+    //   * @returns {String|null} A string if matching succeeds or `null`.
+    //   */
+    //   function getBetween ( openChr, closeChr, escapeChr ) {
+    //     var openCount = 0;
+    //     var buffer = "";
+    //     var chr;
+
+    //     var startIndex = index;
+
+    //     while ( index < length ) {
+    //       chr = input.charAt(index);
+    //       console.log(chr, buffer);
+    //       if ( chr === openChr ) {
+    //         openCount++;
+    //       } else if ( chr === closeChr ) {
+    //         if ( openCount ) {
+    //           openCount--;
+    //         } else if ( index === startIndex || input.charAt(index - 1) !== escapeChr ) {
+    //           index++;
+    //           return buffer;
+    //         }
+    //       }
+    //       index++;
+    //       buffer += chr;
+    //     }
+
+    //     // Set back to original index.
+    //     index = startIndex;
+
+    //     console.warn("getBetween failed open: %s, close: %s, escapeChr: %s", openChr, closeChr, escapeChr);
+    //     return null;
+    //   }
+
+    //   // index = 8;
+    //   // console.debug(getBetween(null, "'", "\\"));
+
+    //   index = 7;
+    //   console.debug(getBetween("(", ")"));
+
+    //   return output;
+    // }
+
+    // parse("update((fred + mike)asdf)");
+    // // parse("name = 'hello\\world\\' sdfds bob'");
+    // // parse("name = 'asdf\\'asdfsdf'");
+  </script>
+</body>
+</html>
