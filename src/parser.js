@@ -56,6 +56,7 @@ acute.parser = (function () {
   var propRegExp = /[a-z_$0-9\.]/i;
   var fullPropRegExp = /^[a-z_$]+[\.a-z0-9_$]*$/i;
   var keywordRegExp = /^true|false|null|undefined$/;
+  var execEmptyArgsRegExp = /^\s*\)/;
 
   var noop = function () {};
   var cache = {};
@@ -103,7 +104,8 @@ acute.parser = (function () {
     },
     exec: {
       start: "scope.exec(",
-      end: ", "
+      end: ""
+      // end: ", "
     }
   };
 
@@ -225,6 +227,11 @@ acute.parser = (function () {
     var hasSet = false;
     var hasExec = false;
 
+    var execInit = false;
+
+    // function checkExecHasArgs ( subStr ) {
+    // }
+
     function startProperty () {
       isProperty = true;
       propStartIndex = i;
@@ -232,6 +239,8 @@ acute.parser = (function () {
 
     function endProperty ( isFunctionCall ) {
       isProperty = false;
+
+      execInit = isFunctionCall;
 
       var prop = expr.substr(propStartIndex, i - propStartIndex);
 
@@ -251,6 +260,15 @@ acute.parser = (function () {
     // Parse the expression.
     for ( i = 0, j = expr.length; i < j; i++ ) {
       var chr = expr[i];
+
+      if ( execInit ) {
+        // Immediately after append "exec('name'"
+        if ( !execEmptyArgsRegExp.test(expr.substr(i)) ) {
+          // Should have arguments.
+          buffer += ", ";
+        }
+        execInit = false;
+      }
 
       if ( isString ) {
         if ( chr === "\\" ) {
@@ -292,6 +310,7 @@ acute.parser = (function () {
             endProperty(false);
             buffer += chr;
           }
+          // Sep 18, 2014 - Removed to shift exec() args inside.
           // buffer += chr;
         }
       }
