@@ -103,8 +103,8 @@ var Observer = acute.Observer = (function () {
     var context = this.locals;
     for ( i = 0, len = keys.length; i < len; i++ ) {
       key = keys[i];
-      // if ( typeof context === "object" && context.hasOwnProperty(key) ) {
-      if ( typeof context === "object" ) {
+      if ( typeof context === "object" && context.hasOwnProperty(key) ) {
+      // if ( typeof context === "object" ) {
         context = context[key];
       } else {
         isBroken = true;
@@ -119,8 +119,8 @@ var Observer = acute.Observer = (function () {
       context = this.context;
       for ( i = 0, len = keys.length; i < len; i++ ) {
         key = keys[i];
-        // if ( typeof context === "object" && context.hasOwnProperty(key) ) {
-        if ( typeof context === "object" ) {
+        if ( typeof context === "object" && context.hasOwnProperty(key) ) {
+        // if ( typeof context === "object" ) {
           context = context[key];
         } else {
           isBroken = true;

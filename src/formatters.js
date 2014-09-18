@@ -10,6 +10,7 @@ acute.format = function ( list, value ) {
       var fmt = acute.formatters[name];
       if ( fmt ) {
         console.log(name, fmt);
+        return fmt.format(value);
       } else {
         cosole.log("no ", name);
       }

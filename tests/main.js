@@ -14,17 +14,18 @@ var model = {
   user: {
     name: "mattuew",
     dob: new Date()
-  }
+  },
+  money: 3245.234
 };
 
 function init () {
   acute.enableLog();
   acute.log("init", model);
 
-  // view = acute.view(document.getElementById("app"), model);
-  // scope = view.scope;
+  view = acute.view(document.getElementById("app"), model);
+  scope = view.scope;
 
-  console.log(acute.parser.parse("update(  )"));
+  // console.log(acute.parser.parse("update(  )"));
   // console.log(acute.parser.parse("{ name : 2, gf: { name: 'Decca', 'ag-\\'e': age } }"));
   // console.log(acute.parser.parse("offer.expires | date 2, 3, 4,"));
   // console.log(acute.parser.parse("offer.expires | date { name: 2, age: bob, name: fred, age: 234, 'people': \"matt\" } | bold"));

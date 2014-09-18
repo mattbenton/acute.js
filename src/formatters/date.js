@@ -119,8 +119,8 @@ acute.formatters.date = (function () {
   // "text = 'action(offer.expiry | date)', name = true, age = fred"
 
   var formatter = {
-    format: function ( date ) {
-
+    format: function ( date, options ) {
+      return strftime(date, "%Y-%m-%d");
     },
     parse: function ( text ) {
 
