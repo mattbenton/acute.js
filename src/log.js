@@ -29,6 +29,11 @@ acute.traces = [
     // enabled: true,
     name: "parser",
     id: "p"
+  },
+  {
+    enabled: true,
+    name: "formatt",
+    id: "f"
   }
 ];
 

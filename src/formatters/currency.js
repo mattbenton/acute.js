@@ -2,7 +2,7 @@
 
 acute.formatters.currency = (function () {
 
-  function format ( m, v ) {
+/*  function format ( m, v ) {
     if (!m || isNaN(+v)) {
         return v; //return as it is.
     }
@@ -64,12 +64,12 @@ acute.formatters.currency = (function () {
 
     v[1] = (m[1] && v[1])? Decimal+v[1] : "";
     return (isNegative?'-':'') + v[0] + v[1]; //put back any negation and combine integer and fraction.
-  }
+  }*/
 
   var formatter = {
     format: function ( value ) {
       if ( value ) {
-        return format("$#,##0.####", value);
+        return "$" + value;
       }
     }
   };

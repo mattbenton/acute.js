@@ -9,10 +9,10 @@ acute.format = function ( list, value ) {
 
       var fmt = acute.formatters[name];
       if ( fmt ) {
-        console.log(name, fmt);
+        acute.trace.f(name, fmt);
         return fmt.format(value);
       } else {
-        cosole.log("no ", name);
+        acute.trace.f("no ", name);
       }
     }
   }
