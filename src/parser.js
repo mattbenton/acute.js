@@ -66,18 +66,27 @@ acute.parser = (function () {
       return cache[expr];
     }
 
-    var transformed = transform(expr);
-    var source = transformed.buffer.replace(/;$/, "").replace(/;/g, ",");
-    var evalFn = new Function("scope", "return (" + source + ")");
-    // acute.trace.p("compiled " + expr + " --> " + evalFn.toString() + ", gets:", transformed.gets, "sets:", transformed.sets, "execs:", transformed.execs);
-    acute.trace.p("compiled " + expr + " --> " + evalFn.toString() + ", watches:", transformed.watches);
+    var source;
+    var watches;
+
+    // Separate expression from any filter chain.
+    var match = expr.match(/^(.*?)(?:\s*\|\s*(.*))?$/);
+    if ( match ) {
+      var transformed = transform(match[1]);
+      source = transformed.buffer.replace(/;$/, "").replace(/;/g, ",");
+      watches = transformed.watches;
+
+      if ( match[2] ) {
+        transformed = transformFilters(source, transformed.watches, match[2]);
+        source = transformed.buffer;
+        watches = transformed.watches;
+      }
+    }
+
+    var evalFn = new Function("scope, filter", "return (" + source + ")");
+    acute.trace.p("compiled " + expr + " --> " + evalFn.toString() + ", watches:", watches);
     cache[expr] = evalFn;
-
-    evalFn.watches = transformed.watches;
-
-    // var compiledFn = compile(transformed);
-    // cache[expr] = compiledFn;
-
+    evalFn.watches = watches;
     return evalFn;
   }
 
@@ -96,6 +105,49 @@ acute.parser = (function () {
     }
   };
 
+  function transformFilters ( source, watches, filterStr ) {
+    var rawFilters = filterStr.split("|");
+    var watchedPaths = {};
+    var i, j, len;
+
+    for ( i = 0, len = watches.length; i < len; i++ ) {
+      watchedPaths[watches[i]] = true;
+    }
+
+    for ( i = 0, len = rawFilters.length; i < len; i++ ) {
+      var raw = rawFilters[i];
+      var nameMatch = raw.match(/^\s*([a-zA-Z$_]+[a-zA-Z0-9$_]*)\s*/);
+      if ( nameMatch ) {
+        var name = nameMatch[1];
+        // Remove name part.
+        raw = raw.substr(nameMatch[0].length);
+
+        var trans = transform(raw);
+        if ( trans && trans.buffer ) {
+          // Remove any preceeding comma.
+          var buffer = trans.buffer.replace(/^\s*,\s*/, "");
+          source = "filter('" + name + "', " + buffer + ", " + source + ")";
+
+          for ( j = 0; j < trans.watches.length; j++ ) {
+            watchedPaths[trans.watches[i]] = true;
+          }
+        } else {
+          source = "filter('" + name + "', " + source + ")";
+        }
+      }
+    }
+
+    watches = [];
+    for ( var path in watchedPaths ) {
+      watches.push(path);
+    }
+
+    return {
+      buffer: source,
+      watches: watches
+    };
+  }
+
   parser.transform = transform;
   function transform ( expr, accessors ) {
     if ( !accessors ) {
@@ -108,11 +160,11 @@ acute.parser = (function () {
 
     if ( fullPropRegExp.test(expr) ) {
       return {
-        expr: expr,
+        // expr: expr,
         buffer: _get.start + "'" + expr + "'" + _get.end,
-        hasGet: true,
-        hasSet: false,
-        hasExec: false,
+        // hasGet: true,
+        // hasSet: false,
+        // hasExec: false,
         watches: [expr]
         // assignExpr: _set.start + "'" + expr + "'" + _set.end
       };
@@ -194,7 +246,9 @@ acute.parser = (function () {
       }
       else if ( chr === "," && inObject ) {
         isObjectField = true;
-        endProperty();
+        if ( isProperty ) {
+          endProperty();
+        }
         buffer += chr;
       }
       else if ( !isObjectField && !isProperty && propStartRegExp.test(chr) ) {
@@ -251,160 +305,14 @@ acute.parser = (function () {
       watches.push(path);
     }
 
-    // var gets = {};
-    // var sets = {};
-    // var execs = {};
-
-    // // acute.trace.p("captureOpRegExp", captureOpRegExp);
-    // buffer.replace(captureOpRegExp, function ( line, op, path ) {
-    //   // acute.trace.p("op", op, "path", path);
-    //   var count;
-    //   if ( op === _get.start ) {
-    //     count = gets[path] || 0;
-    //     gets[path] = count + 1;
-    //   }
-    //   else if ( op === _set.start ) {
-    //     count = sets[path] || 0;
-    //     sets[path] = count + 1;
-    //   }
-    //   else if ( op === _exec.start ) {
-    //     count = execs[path] || 0;
-    //     execs[path] = count + 1;
-    //   }
-    // });
-
     return {
       buffer: buffer,
-      hasGet: hasGet,
-      hasSet: hasSet,
-      hasExec: hasExec,
+      // hasGet: hasGet,
+      // hasSet: hasSet,
+      // hasExec: hasExec,
       watches: watches
     };
   }
-
-  // parser.compile = compile;
-  // function compile ( transformed ) {
-  //   acute.trace.p("transformed: ", transformed.buffer);
-  //   var compiledExprFn = new Function("get, exec, assign", "return " + transformed.buffer);
-  //   var compiledFn;
-
-  //   if ( !transformed.hasGet && !transformed.hasExec && !transformed.hasSet ) {
-  //     // Result is constant so this is simple.
-  //     var result = compiledExprFn();
-  //     compiledFn = function () {
-  //       return result;
-  //     };
-  //     compiledFn.constant = true;
-  //     return compiledFn;
-  //   }
-
-  //   compiledFn = function ( context, locals ) {
-  //     var getFn = transformed.hasGet && function ( prop ) {
-  //       if ( locals ) {
-  //         var value = getValue(locals, prop);
-  //         if ( typeof value !== "undefined" ) {
-  //           return value;
-  //         }
-  //       }
-  //       if ( context ) {
-  //         return getValue(context, prop);
-  //       }
-  //     };
-
-  //     var execFn = transformed.hasExec && function ( prop ) {
-  //       var value = locals && locals[prop];
-  //       if ( isFunction(value) ) {
-  //         notifyChange(context, prop, compiledFn.onUpdate);
-  //         return value;
-  //       }
-  //       value = context && context[prop];
-  //       if ( isFunction(value) ) {
-  //         notifyChange(context, prop, compiledFn.onUpdate);
-  //         return value;
-  //       }
-  //       return noop;
-  //     };
-
-  //     var assignFn = transformed.hasSet && function ( prop, value ) {
-  //       assignValue(context, prop, value);
-  //       notifyChange(context, prop, compiledFn.onUpdate);
-  //     };
-
-  //     return compiledExprFn(getFn, execFn, assignFn);
-  //   };
-
-  //   if ( transformed.assignExpr ) {
-  //     var assignExprFn = new Function("assign", transformed.assignExpr);
-  //     compiledFn.assign = function ( context, value ) {
-  //       var assignFn = function ( prop ) {
-  //         assignValue(context, prop, value);
-  //       };
-  //       assignExprFn(assignFn);
-  //       notifyChange(context, prop, compiledFn.onUpdate);
-  //     };
-  //   }
-
-  //   return compiledFn;
-  // }
-
-  // function getValue ( context, prop ) {
-  //   if ( context ) {
-  //     var keys = prop.split(".");
-  //     var key, child;
-  //     while ( keys.length ) {
-  //       key = keys.shift();
-  //       if ( keys.length ) {
-  //         child = context[key];
-  //         if ( typeof child === "undefined" ) {
-  //           return;
-  //         }
-  //         context = child;
-  //       } else {
-  //         return context[key];
-  //       }
-  //     }
-  //   }
-  // }
-
-  // function assignValue ( context, prop, value ) {
-  //   if ( context ) {
-  //     var keys = prop.split(".");
-  //     var key, child;
-  //     while ( keys.length ) {
-  //       key = keys.shift();
-  //       if ( keys.length ) {
-  //         child = context[key];
-  //         if ( !isPlainObject(child) || !isArray(child) ) {
-  //           child = context[key] = {};
-  //           context = child;
-  //         }
-  //       } else {
-  //         context[key] = value;
-  //       }
-  //     }
-  //   }
-  // }
-
-  // function notifyChange ( context, prop, callback ) {
-  //   if ( callback ) {
-  //     callback(context, prop);
-  //   }
-
-  //   if ( context instanceof Scope ) {
-  //     // Find the scope on which `prop` exists.
-  //     var scope = context;
-  //     while ( scope && !scope.hasOwnProperty(prop) ) {
-  //       scope = scope.$parent;
-  //     }
-
-  //     if ( scope ) {
-  //       // Has to execute on next tick because exec() is called after notify.
-  //       setTimeout(function() {
-  //         scope.$digest();
-  //       }, 0);
-  //     }
-  //   }
-  // }
 
   return parser;
 }());
