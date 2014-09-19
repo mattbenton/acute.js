@@ -17,7 +17,6 @@ var sources = [
   "src/scope.js",
   "src/view.js",
   "src/parser.js",
-  // "src/core.js",
   "src/interpolation.js",
   "src/directives.js",
   "src/directives/*.js",
