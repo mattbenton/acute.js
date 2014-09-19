@@ -25,12 +25,25 @@ function bindDirectives ( node, scope ) {
           preventFutherBinding = true;
         }
       } else {
-        console.log("here!", name);
+        bindGenericAttribute(node, name, attrValue, scope);
       }
     }
   }
 
   return preventFutherBinding;
+}
+
+function bindGenericAttribute ( node, attrName, attrValue, scope ) {
+  var evalFn = acute.parser.parse(attrValue);
+  var unwatches = scope.watch(evalFn.watches, function ( change ) {
+    if ( change.value ) {
+      node.setAttribute(attrName, change.value);
+    } else {
+      node.removeAttribute(attrName);
+    }
+  });
+
+  // TODO: Unbind
 }
 
 function normalizeAttributes ( attributes ) {
