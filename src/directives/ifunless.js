@@ -46,9 +46,8 @@ acute.directives["if"] = (function () {
     this.inner = new IfUnlessDirective(element, expr, scope, "if", true);
   }
 
-  IfDirective.bind = function ( element, attr, scope ) {
-    var expr = attr.value || attr.nodeValue;
-    var inst = new IfDirective(element, expr, scope);
+  IfDirective.bind = function ( element, attrValue, attrs, scope ) {
+    var inst = new IfDirective(element, attrValue, scope);
   };
 
   IfDirective.unbind = function ( element ) {
@@ -64,9 +63,8 @@ acute.directives.unless = (function () {
     this.inner = new IfUnlessDirective(element, expr, scope, "unless", false);
   }
 
-  UnlessDirective.bind = function ( element, attr, scope ) {
-    var expr = attr.value || attr.nodeValue;
-    var inst = new UnlessDirective(element, expr, scope);
+  UnlessDirective.bind = function ( element, attrValue, attrs, scope ) {
+    var inst = new UnlessDirective(element, attrValue, scope);
   };
 
   UnlessDirective.unbind = function ( element ) {

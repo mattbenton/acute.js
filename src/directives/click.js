@@ -7,15 +7,11 @@
 acute.directives.click = (function () {
 
   var directive = {};
-  directive.bind = function ( element, attr, scope ) {
-    var expr = attr.value || attr.nodeValue;
-    acute.trace.d("bind click", expr);
-
+  directive.bind = function ( element, attrValue, attrs, scope ) {
     var el = $(element);
     el.on("click", function () {
-      var expr = el.attr(acutePrefix + "click");
-      if ( expr ) {
-        scope.$eval(expr);
+      if ( attrValue ) {
+        scope.$eval(attrValue);
       }
       return false;
     });

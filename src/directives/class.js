@@ -8,9 +8,8 @@ acute.directives["class"] = (function () {
 
   var directive = {};
 
-  directive.bind = function ( element, attr, scope ) {
-    var expr = attr.value || attr.nodeValue;
-    var evalFn = acute.parser.parse(expr);
+  directive.bind = function ( element, attrValue, attrs, scope ) {
+    var evalFn = acute.parser.parse(attrValue);
     var $el = $(element);
     scope.watch(evalFn.watches, function ( change ) {
       var classes = evalFn(scope);

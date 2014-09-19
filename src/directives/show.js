@@ -7,10 +7,8 @@
 acute.directives.show = (function () {
 
   var directive = {};
-  directive.bind = function ( element, attr, scope ) {
-    var expr = attr.value || attr.nodeValue;
-
-    var evalFn = acute.parser.parse(expr);
+  directive.bind = function ( element, attrValue, attrs, scope ) {
+    var evalFn = acute.parser.parse(attrValue);
     if ( evalFn.watches ) {
       var updateFn = function ( change ) {
         var result = evalFn(scope);

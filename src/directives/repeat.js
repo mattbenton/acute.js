@@ -30,9 +30,8 @@ acute.directives.repeat = (function () {
 
   RepeatDirective.stop = true;
 
-  RepeatDirective.bind = function ( element, attr, scope ) {
-    var inst = new RepeatDirective($(element), attr.value || attr.nodeValue, scope);
-    acute.log(inst);
+  RepeatDirective.bind = function ( element, attrValue, attrs, scope ) {
+    var inst = new RepeatDirective($(element), attrValue, scope);
   };
 
   RepeatDirective.prototype.updateCollection = function ( info ) {
