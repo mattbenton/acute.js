@@ -8,11 +8,14 @@ var Observer = acute.Observer = (function () {
     return "$" + UUID;
   }
 
+  var WATCH_ID = 0;
+
   function Observer ( context ) {
     this.paths = {};
     this.context = context;
     this.locals = {};
     this.destroyed = false;
+    this.unwatches = {};
   }
 
   Observer.prototype.destroy = function () {
@@ -24,7 +27,11 @@ var Observer = acute.Observer = (function () {
     this.destroyed = true;
   };
 
-  Observer.prototype.watch = function ( path, options, callback ) {
+  /**
+  * @param {String|Object|Array} pathOrObj One or more paths to watch. If `path` is an
+  *   object, only keys have truthy values are watched.
+  */
+  Observer.prototype.watch = function ( pathOrObj, options, callback ) {
     if ( arguments.length < 2 ) {
       throw new Error("[acute] invalid watch arguments");
     }
@@ -47,43 +54,67 @@ var Observer = acute.Observer = (function () {
       throw new Error("[acute] watch callback must be a function");
     }
 
-    if ( isArray(path) ) {
-      for ( var i = 0, len = path.length; i < len; i++ ) {
-        this.watch(path[i], options, callback);
-      }
-      return;
-    }
-
-    if ( isPlainObject(path) ) {
-      for ( var p in path ) {
-        this.watch(p, options, callback);
-      }
-      return;
-    }
-
-    var watchHash = getWatchHash(path, options);
-    var watch = this.paths[watchHash];
-    if ( !watch ) {
-      watch = this.paths[watchHash] = new Watch(path, options, this);
-    }
-
-    watch.add({
+    var listener = {
       context: options.context,
       callback: callback
-    });
+    };
 
-    watch.digest(!!options.init);
+    var watch;
+
+    var unwatches;
+
+    if ( typeof pathOrObj === "string" ) {
+      watch = this.getWatch(pathOrObj);
+      unwatches = watch.add(listener, options.init);
+    } else if ( isPlainObject(pathOrObj) ) {
+      unwatches = {};
+      for ( var path in pathOrObj ) {
+        if ( pathOrObj[path] ) {
+          watch = this.getWatch(path);
+          unwatches[path] = watch.add(listener, options.init);
+        }
+      }
+    } else if ( isArray(pathOrObj) ) {
+      unwatches = {};
+      for ( var i = 0, len = pathOrObj.length; i < len; i++ ) {
+        watch = this.getWatch(pathOrObj[i]);
+        unwatches[pathOrObj[i]] = watch.add(listener, options.init);
+      }
+    }
+
+    return unwatches;
   };
 
-  Observer.prototype.unwatch = function () {
+  Observer.prototype.getWatch = function ( path ) {
+    var watch = this.paths[path];
+    if ( !watch ) {
+      watch = this.paths[path] = new Watch(path, this);
+    }
+    return watch;
+  };
 
+  Observer.prototype.unwatch = function ( watchId ) {
+    var path = watchId.substr(0, watchId.indexOf("#"));
+    var watch = this.paths[path];
+    if ( watch ) {
+      if ( watch.listeners[watchId] ) {
+        delete watch.listeners[watchId];
+        watch.count--;
+      } else {
+        throw new Error("Attempted to unwatch non-existent id '" + watchId + "'");
+      }
+    } else {
+      throw new Error("Attempted to unwatch non-existent path for id '" + watchId + "'");
+    }
   };
 
   Observer.prototype.digest = function () {
     for ( var path in this.paths ) {
       if ( !this.destroyed ) {
         var watch = this.paths[path];
-        watch.digest();
+        if ( watch.count ) {
+          watch.digest();
+        }
       }
     }
   };
@@ -182,17 +213,21 @@ var Observer = acute.Observer = (function () {
     this.name = watch.path.split(".").pop();
   }
 
-  function Watch ( path, options, observer ) {
-    this.listeners = [];
+  function Watch ( path, observer ) {
+    // Keys are watchIds
+    this.listeners = {};
+
+    // Listener count
+    this.count = 0;
 
     this.observer = observer;
     this.path = path;
-    this.options = options;
   }
 
   Watch.prototype.destroy = function () {
-    for ( var i = 0, len = this.listeners.length; i < len; i++ ) {
-      var record = this.listeners[i];
+    var listeners = this.listeners;
+    for ( var watchId in listeners ) {
+      var record = listeners[watchId];
       record.callback = null;
       record.context = null;
     }
@@ -203,14 +238,10 @@ var Observer = acute.Observer = (function () {
   };
 
   Watch.prototype.notify = function ( change ) {
-    acute.trace.s((this.preventNotify ? "prevent " : "") + "notify(" + this.listeners.length + ")", change);
-
-    if ( !this.preventNotify ) {
-      var listeners = this.listeners;
-      for ( var i = 0, len = listeners.length; i < len; i++ ) {
-        var record = listeners[i];
-        record.callback.call(record.context, change);
-      }
+    var listeners = this.listeners;
+    for ( var watchId in listeners ) {
+      var record = listeners[watchId];
+      record.callback.call(record.context, change);
     }
   };
 
@@ -255,8 +286,10 @@ var Observer = acute.Observer = (function () {
     this.children = null;
   };
 
-  Watch.prototype.digest = function ( notifyInit ) {
-    // var pathInfo = this.observer.getPathInfo(this.path);
+  Watch.prototype.digest = function () {
+    var didChange = false;
+    var didRemoveChildren = false;
+
     var currentValue = this.observer.get(this.path);
 
     // var currentValue = pathInfo.value;
@@ -272,33 +305,37 @@ var Observer = acute.Observer = (function () {
 
     if ( type !== this.type && (this.type === "array" || this.type === "object") ) {
       acute.trace.s("changed from array or object to other. remove children");
-      this.removeChildren();
+      didRemoveChildren = this.removeChildren();
     }
 
     if ( type === "array" ) {
-      this.digestArray(currentValue, notifyInit);
+      didChange = this.digestArray(currentValue);
     } else if ( type === "object" ) {
-      this.digestObject(currentValue, notifyInit);
+      didChange = this.digestObject(currentValue);
     } else {
       // acute.trace.s("digest other", currentValue);
-      if ( currentValue !== this.value || notifyInit ) {
+      if ( currentValue !== this.value ) {
         // acute.trace.s(this.path, "changed");
 
         change = new ChangeRecord(this);
         change.value = currentValue;
         change.lastValue = this.value;
         this.notify(change);
+
+        didChange = true;
       }
     }
 
     this.value = currentValue;
     this.type = type;
+
+    return didChange || didRemoveChildren;
   };
 
   // Watch.prototype.digestChildren = function ( context, type ) {
   // };
 
-  Watch.prototype.digestObject = function ( context, notifyInit ) {
+  Watch.prototype.digestObject = function ( context ) {
     // acute.trace.s("digset object", context);
 
     var children = this.children;
@@ -349,10 +386,11 @@ var Observer = acute.Observer = (function () {
       change.lastValue = this.value;
       change.changes = changes;
       this.notify(change);
+      return true;
     }
   };
 
-  Watch.prototype.digestArray = function ( context, notifyInit ) {
+  Watch.prototype.digestArray = function ( context ) {
     // acute.trace.s("digset array", context);
 
     var children = this.children;
@@ -435,11 +473,33 @@ var Observer = acute.Observer = (function () {
       change.lastValue = this.value;
       change.changes = changes;
       this.notify(change);
+      return true;
     }
   };
 
-  Watch.prototype.add = function ( listener ) {
-    this.listeners.push(listener);
+  Watch.prototype.notifyInit = function ( listener ) {
+    if ( !this.digest() ) {
+      var type = this.type;
+      if ( type === "array" ) {
+        // didChange = this.digestArray(currentValue);
+      } else if ( type === "object" ) {
+        // didChange = this.digestObject(currentValue);
+      } else {
+        var change = new ChangeRecord(this);
+        change.value = change.lastValue = this.value;
+        listener.callback.call(listener.context, change);
+      }
+    }
+  };
+
+  Watch.prototype.add = function ( listener, initNotify ) {
+    this.count++;
+    var watchId = this.path + "#" + (WATCH_ID++);
+    this.listeners[watchId] = listener;
+    if ( initNotify ) {
+      this.notifyInit(listener);
+    }
+    return watchId;
   };
 
   return Observer;

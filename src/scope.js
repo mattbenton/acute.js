@@ -78,6 +78,25 @@ var Scope = acute.Scope = (function () {
   //   return noOp;
   // };
 
+  Scope.prototype.filter = function ( filters, value, other ) {
+    if ( filters.length ) {
+      for ( var i = 0, len = filters.length; i < len; i++ ) {
+        var item = filters[i];
+        var name = item[0];
+        var args = item[1];
+
+        var fmt = acute.formatters[name];
+        if ( fmt ) {
+          // acute.trace.f(name, fmt);
+          return fmt.format(value, this, other);
+        } else {
+          acute.trace.f("no ", name);
+        }
+      }
+    }
+    return value;
+  };
+
   Scope.prototype.clone = function ( locals ) {
     var clone = new Scope(this.context);
     if ( locals ) {

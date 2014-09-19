@@ -32,16 +32,17 @@ acute.view = function ( element, model ) {
 };
 
 function bindView ( view, element, scope ) {
-  var inDebug = false;
-
   // console.warn("bind", element);
 
-  var preventFutherBinding = bindDirectives(element, scope);
+  // var preventFutherBinding = bindDirectives(element, scope);
+  if ( bindDirectives(element, scope) ) {
+    return;
+  }
 
   if ( element.hasChildNodes() ) {
-    if ( preventFutherBinding ) {
-      return true;
-    }
+    // if ( preventFutherBinding ) {
+    //   return true;
+    // }
 
     var node = element.firstChild;
     while ( node ) {
@@ -49,18 +50,15 @@ function bindView ( view, element, scope ) {
 
       if ( nodeType === ELEMENT_NODE ) {
         bindView(view, node, scope);
-        // preventFutherBinding = bindView(view, node, scope);
-        // if ( preventFutherBinding ) {
-        //   break;
-        // }
       }
       else if ( nodeType === TEXT_NODE ) {
-        interpolateTextNode(node, scope);
+        // interpolateTextNode(node, scope);
+        Interpolation.interpolate(node, scope);
       }
 
       node = node.nextSibling;
     }
   }
 
-  return false;
+  // return false;
 }

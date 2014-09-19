@@ -17,7 +17,8 @@ var sources = [
   "src/scope.js",
   "src/view.js",
   "src/parser.js",
-  "src/core.js",
+  // "src/core.js",
+  "src/interpolation.js",
   "src/directives.js",
   "src/directives/*.js",
   "src/formatters.js",
@@ -93,15 +94,25 @@ gulp.task("build", ["lint"], function () {
     .pipe(size({ showFiles: true }))
     .pipe(gulp.dest("build"))
     .pipe(notify("Built: <%= file.relative %>"))
+});
 
-    // .pipe(uglify())
-    // .pipe(rename("acute.min.js"))
-    // .pipe(size({ showFiles: true }))
-    // .pipe(gulp.dest("build"))
-    // .pipe(gzip())
-    // .pipe(size({ showFiles: true }))
-    // .pipe(gulp.dest("build"))
-    // .pipe(notify("Built: <%= file.relative %>"));
+gulp.task("build2", ["lint"], function () {
+  // Copy source array
+  var build = sources.slice(0);
+  build.unshift("src/build.prefix.js");
+  build.push("src/build.suffix.js");
+
+  return gulp.src(build)
+    .pipe(concat("acute.js"))
+    .pipe(size({ showFiles: true }))
+    .pipe(uglify())
+    .pipe(rename("acute.min.js"))
+    .pipe(size({ showFiles: true }))
+    .pipe(gulp.dest("build"))
+    .pipe(gzip())
+    .pipe(size({ showFiles: true }))
+    .pipe(gulp.dest("build"))
+    .pipe(notify("Built: <%= file.relative %>"));
 });
 
 gulp.task("watch", function() {

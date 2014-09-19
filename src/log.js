@@ -16,7 +16,7 @@ acute.traces = [
     id: "i"
   },
   {
-    // enabled: true,
+    enabled: true,
     name: "directive",
     id: "d"
   },
@@ -32,7 +32,7 @@ acute.traces = [
   },
   {
     enabled: true,
-    name: "formatt",
+    name: "format",
     id: "f"
   }
 ];

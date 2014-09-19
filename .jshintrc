@@ -12,7 +12,8 @@
     "ELEMENT_NODE": true,
     "TEXT_NODE": true,
     "bindDirectives": true,
-    "interpolateTextNode": true
+    "interpolateTextNode": true,
+    "Interpolation": true
   },
   "undef": true,
   "browser": true,

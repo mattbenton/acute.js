@@ -59,7 +59,7 @@ acute.parser = (function () {
   var execEmptyArgsRegExp = /^\s*\)/;
 
   var noop = function () {};
-  var cache = {};
+  var cache = parser.cache = {};
 
   parser.parse = parse;
   function parse ( expr ) {
@@ -84,9 +84,7 @@ acute.parser = (function () {
       }
     }
 
-    console.log(source);
-
-    var evalFn = new Function("scope, filter", "return (" + source + ")");
+    var evalFn = new Function("scope, pathObj", "return (" + source + ")");
     acute.trace.p("compiled " + expr + " --> " + evalFn.toString() + ", watches:", watches);
     cache[expr] = evalFn;
     evalFn.watches = watches;
@@ -171,7 +169,7 @@ acute.parser = (function () {
         watches.push(path);
       }
 
-      source = "filter([" + filters.join(", ") + "], " + source + ")";
+      source = "scope.filter([" + filters.join(", ") + "], " + source + ", pathObj)";
     }
 
     return {
