@@ -87,8 +87,7 @@ var Scope = acute.Scope = (function () {
 
         var fmt = acute.formatters[name];
         if ( fmt ) {
-          // acute.trace.f(name, fmt);
-          return fmt.format(value, this, other);
+          value = fmt.format(value, args, this, other);
         } else {
           acute.trace.f("no ", name);
         }

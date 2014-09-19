@@ -23,8 +23,8 @@ function init () {
   acute.enableLog();
   // acute.log("init", model);
 
-  view = acute.view(document.getElementById("app"), model);
-  scope = view.scope;
+  // view = acute.view(document.getElementById("app"), model);
+  // scope = view.scope;
 
   // scope = new acute.Scope(model);
 
@@ -45,6 +45,7 @@ function init () {
 
   console.log(w);
 */
+  console.log(acute.parser.parse("{ i18n.minimumPurchase | if offer.minimumPurchase | eval }{ i18n.noMinimumPurchase | if !offer.minimumPurchase }"));
   // console.log(acute.parser.parse("{ name : 2, gf: { name: 'Decca', 'ag-\\'e': age } }"));
   // console.log(acute.parser.parse("offer.expires | date 2, 3, 4,"));
   // console.log(acute.parser.parse("offer.expires | date { name: 2, age: bob, name: fred, age: 234, 'people': \"matt\" } | bold"));

@@ -12,7 +12,7 @@ var notify = require("gulp-notify");
 var sources = [
   "src/log.js",
   "src/helpers.js",
-  "src/linkedlist.js",
+  // "src/linkedlist.js",
   "src/observer.js",
   "src/scope.js",
   "src/view.js",
@@ -23,7 +23,7 @@ var sources = [
   "src/directives/*.js",
   "src/formatters.js",
   "src/formatters/*.js",
-  "src/polyfills.js"
+  // "src/polyfills.js"
 ];
 
 gulp.task("lint", function () {

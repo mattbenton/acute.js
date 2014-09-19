@@ -5,7 +5,7 @@ acute.formatters.eval = (function () {
   var interpolateRegExpGlobal = /\{\s*([^}]+)\s*\}/g;
 
   var formatter = {
-    format: function ( value, scope, pathObj ) {
+    format: function ( value, options, scope, pathObj ) {
       if ( interpolateRegExp.test(value) ) {
         return value.replace(interpolateRegExpGlobal, function ( line, source ) {
           var evalFn = acute.parser.parse(source);

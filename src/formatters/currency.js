@@ -67,7 +67,7 @@ acute.formatters.currency = (function () {
   }*/
 
   var formatter = {
-    format: function ( value ) {
+    format: function ( value, args, scope ) {
       if ( value ) {
         return "$" + value;
       }
