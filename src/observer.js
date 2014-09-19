@@ -94,17 +94,23 @@ var Observer = acute.Observer = (function () {
   };
 
   Observer.prototype.unwatch = function ( watchId ) {
-    var path = watchId.substr(0, watchId.indexOf("#"));
-    var watch = this.paths[path];
-    if ( watch ) {
-      if ( watch.listeners[watchId] ) {
-        delete watch.listeners[watchId];
-        watch.count--;
+    if ( typeof watchId === "string" ) {
+      var path = watchId.substr(0, watchId.indexOf("#"));
+      var watch = this.paths[path];
+      if ( watch ) {
+        if ( watch.listeners[watchId] ) {
+          delete watch.listeners[watchId];
+          watch.count--;
+        } else {
+          throw new Error("Attempted to unwatch non-existent id '" + watchId + "'");
+        }
       } else {
-        throw new Error("Attempted to unwatch non-existent id '" + watchId + "'");
+        throw new Error("Attempted to unwatch non-existent path for id '" + watchId + "'");
       }
-    } else {
-      throw new Error("Attempted to unwatch non-existent path for id '" + watchId + "'");
+    } else if ( isArray(watchId) ) {
+      for ( var i = 0, len = watchId.length; i < len; i++ ) {
+        this.unwatch(watchId[i]);
+      }
     }
   };
 
