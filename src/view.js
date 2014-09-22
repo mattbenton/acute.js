@@ -48,6 +48,11 @@ function bindView ( view, element, scope ) {
     while ( node ) {
       var nodeType = node.nodeType;
 
+      // Get a reference to the next node before calling `bindView()`
+      // as directives like `if` or `unless` may remove the node,
+      // resulting in a broken chain.
+      var nextSibling = node.nextSibling;
+
       if ( nodeType === ELEMENT_NODE ) {
         bindView(view, node, scope);
       }
@@ -56,7 +61,7 @@ function bindView ( view, element, scope ) {
         Interpolation.interpolate(node, scope);
       }
 
-      node = node.nextSibling;
+      node = nextSibling;
     }
   }
 
