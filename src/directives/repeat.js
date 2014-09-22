@@ -7,9 +7,13 @@
 acute.directives.repeat = (function () {
   function RepeatDirective ( $template, expr, scope ) {
     this.scope = scope;
-    this.$template = $template.removeAttr("ac-repeat");
-    this.$parent = $template.parent();
-    $template.remove();
+
+    $("<!-- ac-repeat: " + expr + " -->").insertBefore($template);
+    this.$placeholder = $("<!-- end ac-repeat -->").insertAfter($template);
+
+    this.$template = $template
+      .removeAttr("ac-repeat")
+      .remove();
 
     var match = expr.match(/for\s+([a-z0-9$_]+)(?:\s*,\s*([a-z0-9$_]+))?\s*in\s*([a-z0-9$_.]+)/i);
     if ( !match ) {
@@ -54,7 +58,8 @@ acute.directives.repeat = (function () {
 
   RepeatDirective.prototype.addItem = function ( change ) {
     var scope = this.scope;
-    var $clone = this.$template.clone().appendTo(this.$parent);
+
+    var $clone = this.$template.clone().insertBefore(this.$placeholder);
     var childScope = scope.clone();
 
     var local = scope.get(change.path);
@@ -72,13 +77,17 @@ acute.directives.repeat = (function () {
 
   RepeatDirective.prototype.removeItem = function ( change ) {
     var view = change.data.view;
-    view.element.remove();
-    view.destroy();
+    if ( view ) {
+      view.element.remove();
+      view.destroy();
+    }
   };
 
   RepeatDirective.prototype.moveItem = function ( change ) {
     var view = change.data.view;
-    view.scope.locals[this.keyName] = change.index;
+    if ( view ) {
+      view.scope.locals[this.keyName] = change.index;
+    }
   };
 
   return RepeatDirective;

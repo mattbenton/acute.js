@@ -19,10 +19,10 @@ function bindDirectives ( node, scope ) {
 
       var directive = acute.directives[name];
       if ( directive ) {
-
         directive.bind(node, attrValue, attrs, scope);
         if ( directive.stop ) {
-          preventFutherBinding = true;
+          // preventFutherBinding = true;
+          return true;
         }
       } else {
         bindGenericAttribute(node, name, attrValue, scope);

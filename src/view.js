@@ -32,18 +32,11 @@ acute.view = function ( element, model ) {
 };
 
 function bindView ( view, element, scope ) {
-  // console.warn("bind", element);
-
-  // var preventFutherBinding = bindDirectives(element, scope);
   if ( bindDirectives(element, scope) ) {
     return;
   }
 
   if ( element.hasChildNodes() ) {
-    // if ( preventFutherBinding ) {
-    //   return true;
-    // }
-
     var node = element.firstChild;
     while ( node ) {
       var nodeType = node.nodeType;
@@ -57,13 +50,10 @@ function bindView ( view, element, scope ) {
         bindView(view, node, scope);
       }
       else if ( nodeType === TEXT_NODE ) {
-        // interpolateTextNode(node, scope);
         Interpolation.interpolate(node, scope);
       }
 
       node = nextSibling;
     }
   }
-
-  // return false;
 }
