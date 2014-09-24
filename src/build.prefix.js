@@ -8,11 +8,3 @@
   }
 }(function () {
   var acute = {};
-
-  var $, jQuery;
-  acute.jQuery = function ( jQuery ) {
-    if ( jQuery ) {
-      $ = jQuery = jQuery;
-    }
-  };
-  acute.jQuery(window.jQuery);

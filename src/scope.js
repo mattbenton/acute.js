@@ -3,7 +3,7 @@
 */
 
 /* jshint evil: true */
-
+/* exported Scope */
 var Scope = acute.Scope = (function () {
 
   var allScopes = acute.allScopes = [];
@@ -50,7 +50,7 @@ var Scope = acute.Scope = (function () {
   Scope.prototype.exec = function ( path ) {
     var args = Array.prototype.slice.call(arguments, 1);
     var fn = this.get(path);
-    if ( fn && isFunction(fn) ) {
+    if ( fn && _.isFunction(fn) ) {
       var contextPath = getPreviousPathSegment(path);
       if ( contextPath ) {
         var context = this.get(contextPath);

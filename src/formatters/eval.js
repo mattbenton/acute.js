@@ -1,6 +1,6 @@
 /* jshint evil:true */
 
-acute.formatters.eval = (function () {
+acute.formatters["eval"] = (function () {
   var interpolateRegExp = /\{\s*([^}]+)\s*\}/;
   var interpolateRegExpGlobal = /\{\s*([^}]+)\s*\}/g;
 

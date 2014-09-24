@@ -1,7 +1,5 @@
 var ELEMENT_NODE = 1;
-var ATTRIBUTE_NODE = 2;
 var TEXT_NODE = 3;
-var COMMENT_NODE = 8;
 
 function View ( element, modelOrScope ) {
   this.element = element;
@@ -29,6 +27,7 @@ acute.view = function ( element, model ) {
     var view = new View(element, model);
     return view;
   }
+  throw new Error("[acute] invalid element passed to view()");
 };
 
 function bindView ( view, element, scope ) {

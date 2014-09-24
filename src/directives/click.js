@@ -1,5 +1,3 @@
-/* global acutePrefix */
-
 /**
 * Default directives
 */
@@ -17,7 +15,7 @@ acute.directives.click = (function () {
     });
   };
 
-  directive.unbind = function ( element ) {
+  directive.unbind = function () {
 
   };
 

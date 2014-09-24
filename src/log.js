@@ -38,12 +38,14 @@ acute.traces = [
 ];
 
 acute.enableLog = function () {
+  var i, len, info;
+
   var console = window.console;
   var consoleLog = console && console.log;
   var consoleDebug = console && (console.debug || console.log);
   var consoleError = console && (console.error || console.log);
 
-  if ( consoleLog ) {
+  if ( consoleLog && 0 ) {
     if ( Function.prototype.bind ) {
       // acute.log = consoleLog.bind(console);
       acute.log = Function.prototype.bind.call(consoleLog, console);
@@ -65,9 +67,15 @@ acute.enableLog = function () {
       acute.log("---------- acute log enabled --------");
     }
 
-    for ( var i = 0, len = acute.traces.length; i < len; i++ ) {
-      var info = acute.traces[i];
+    for ( i = 0, len = acute.traces.length; i < len; i++ ) {
+      info = acute.traces[i];
       acute.trace[info.id] = createTraceFn(info, console, consoleDebug);
+    }
+  } else {
+    var noop = function () {};
+    for ( i = 0, len = acute.traces.length; i < len; i++ ) {
+      info = acute.traces[i];
+      acute.trace[info.id] = noop;
     }
   }
 };

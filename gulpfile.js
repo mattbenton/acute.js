@@ -92,6 +92,7 @@ gulp.task("build", ["lint"], function () {
     .pipe(concat("acute.js"))
     .pipe(size({ showFiles: true }))
     .pipe(gulp.dest("build"))
+    .pipe(gulp.dest("/Users/matt/work/fanplayr/repos/client-runtime/src/acute"))
     .pipe(notify("Built: <%= file.relative %>"))
 });
 

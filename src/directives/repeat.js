@@ -1,5 +1,3 @@
-/* global acutePrefix */
-
 /**
 * Default directives
 */
@@ -20,7 +18,6 @@ acute.directives.repeat = (function () {
       throw new Error('acute: invalid repeat syntax: "' + expr + '"');
     }
 
-    var iteratorName, keyName;
     if ( match[2] ) {
       this.keyName = match[1];
       this.iteratorName = match[2];
@@ -35,7 +32,7 @@ acute.directives.repeat = (function () {
   RepeatDirective.stop = true;
 
   RepeatDirective.bind = function ( element, attrValue, attrs, scope ) {
-    var inst = new RepeatDirective($(element), attrValue, scope);
+    new RepeatDirective($(element), attrValue, scope);
   };
 
   RepeatDirective.prototype.updateCollection = function ( info ) {

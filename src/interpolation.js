@@ -54,7 +54,7 @@ function Interpolation ( textOrNode, scope ) {
   this.onChange();
 }
 
-Interpolation.prototype.onChange = function ( change ) {
+Interpolation.prototype.onChange = function () {
   var currentPaths = {};
 
   var output = "";

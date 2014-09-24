@@ -1,4 +1,4 @@
-/*jshint undef:true */
+/* exported Observer */
 
 var Observer = acute.Observer = (function () {
 
@@ -41,16 +41,16 @@ var Observer = acute.Observer = (function () {
       options = {};
     }
 
-    options = extend({
+    options = _.merge({
       init: true, // notify initial state as changes
       context: null // callback execution context
     }, options);
 
-    if ( !isPlainObject(options) ) {
+    if ( !_.isPlainObject(options) ) {
       throw new Error("[acute] watch options must be an object");
     }
 
-    if ( !isFunction(callback) ) {
+    if ( !_.isFunction(callback) ) {
       throw new Error("[acute] watch callback must be a function");
     }
 
@@ -66,7 +66,7 @@ var Observer = acute.Observer = (function () {
     if ( typeof pathOrObj === "string" ) {
       watch = this.getWatch(pathOrObj);
       unwatches = watch.add(listener, options.init);
-    } else if ( isPlainObject(pathOrObj) ) {
+    } else if ( _.isPlainObject(pathOrObj) ) {
       unwatches = {};
       for ( var path in pathOrObj ) {
         if ( pathOrObj[path] ) {
@@ -74,7 +74,7 @@ var Observer = acute.Observer = (function () {
           unwatches[path] = watch.add(listener, options.init);
         }
       }
-    } else if ( isArray(pathOrObj) ) {
+    } else if ( _.isArray(pathOrObj) ) {
       unwatches = {};
       for ( var i = 0, len = pathOrObj.length; i < len; i++ ) {
         watch = this.getWatch(pathOrObj[i]);
@@ -107,7 +107,7 @@ var Observer = acute.Observer = (function () {
       } else {
         throw new Error("Attempted to unwatch non-existent path for id '" + watchId + "'");
       }
-    } else if ( isArray(watchId) ) {
+    } else if ( _.isArray(watchId) ) {
       for ( var i = 0, len = watchId.length; i < len; i++ ) {
         this.unwatch(watchId[i]);
       }
@@ -204,15 +204,6 @@ var Observer = acute.Observer = (function () {
       }
     }
   };
-
-  function getWatchHash ( path, options ) {
-    return path;
-    // var hash = path + "#";
-    // if ( options.init ) {
-    //   hash += "i";
-    // }
-    // return hash;
-  }
 
   function ChangeRecord ( watch ) {
     this.path = watch.path;

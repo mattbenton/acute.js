@@ -10,11 +10,11 @@ acute.formatters.date = (function () {
       return options.daysLong[date.getDay()];
     },
     // Two-digit day of the month (with leading zeros). 01 through 31.
-    d: function ( date, options ) {
+    d: function ( date ) {
       return pad(date.getDate());
     },
     // Two-digit day of the month (space padded). 1 through 31.
-    e: function ( date, options ) {
+    e: function ( date ) {
       return pad(date.getDate(), " ");
     },
     // Abbreviated month name. Jan through Dec.
@@ -26,49 +26,49 @@ acute.formatters.date = (function () {
       return options.monthsLong[date.getMonth()];
     },
     // Two digit representation of the month. 01 (for January) through 12 (for December).
-    m: function ( date, options ) {
+    m: function ( date ) {
       return pad(date.getMonth() + 1);
     },
     // Two digit representation for the year. 13.
-    y: function ( date, options ) {
+    y: function ( date ) {
       return String(date.getFullYear()).substr(2, 2);
     },
     // Four digit representation for the year. 2013.
-    Y: function ( date, options ) {
+    Y: function ( date ) {
       return date.getFullYear();
     },
     // Two digit representation of the hour in 24-hour format. 00 through 23.
-    H: function ( date, options ) {
+    H: function ( date ) {
       return pad(date.getHours());
     },
     // Two digit representation of the hour in 24-hour format, with a space preceding single digits. 0 through 23.
-    k: function ( date, options ) {
+    k: function ( date ) {
       return pad(date.getHours(), " ");
     },
     // Two digit representation of the hour in 12-hour format. 01 through 12.
-    I: function ( date, options ) {
+    I: function ( date ) {
       var hour = date.getHours() + 1;
       return pad(hour > 12 ? hour - 12 : hour);
     },
     // Hour in 12-hour format, with a space preceding single digits. 1 through 12.
-    l: function ( date, options ) {
+    l: function ( date ) {
       var hour = date.getHours() + 1;
       return pad(hour > 12 ? hour - 12 : hour, " ");
     },
     // Two digit representation of the minute. 00 through 59.
-    M: function ( date, options ) {
+    M: function ( date ) {
       return pad(date.getMinutes());
     },
     // UPPER-CASE "AM" or "PM" based on the given time. Example: AM for 00:31, PM for 22:23.
-    p: function ( date, options ) {
+    p: function ( date ) {
       return date.getHours() < 12 ? "AM" : "PM";
     },
     // lower-case "am" or "pm" based on the given time. Example: am for 00:31, pm for 22:23.
-    P: function ( date, options ) {
+    P: function ( date ) {
       return date.getHours() < 12 ? "am" : "pm";
     },
     // Two digit representation of the second. 00 through 59.
-    S: function ( date, options ) {
+    S: function ( date ) {
       return pad(date.getSeconds());
     }
   };
@@ -76,10 +76,6 @@ acute.formatters.date = (function () {
   function pad ( number, padChar ) {
     padChar = padChar || "0";
     return number < 10 ? padChar + number : number;
-  }
-
-  function noOp ( date, symbol ) {
-    return "%" + symbol;
   }
 
   // "%Y-%m-%d"
@@ -119,10 +115,10 @@ acute.formatters.date = (function () {
   // "text = 'action(offer.expiry | date)', name = true, age = fred"
 
   var formatter = {
-    format: function ( date, options ) {
+    format: function ( date ) {
       return strftime(date, "%Y-%m-%d");
     },
-    parse: function ( text ) {
+    parse: function () {
 
     }
   };

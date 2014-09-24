@@ -1,5 +1,3 @@
-/* global acutePrefix */
-
 /**
 * Default directives
 */
@@ -11,7 +9,7 @@ acute.directives["class"] = (function () {
   directive.bind = function ( element, attrValue, attrs, scope ) {
     var evalFn = acute.parser.parse(attrValue);
     var $el = $(element);
-    scope.watch(evalFn.watches, function ( change ) {
+    scope.watch(evalFn.watches, function () {
       var classes = evalFn(scope);
       acute.trace.d("classes", classes);
       for ( var klass in classes ) {
@@ -20,7 +18,7 @@ acute.directives["class"] = (function () {
     });
   };
 
-  directive.unbind = function ( element ) {
+  directive.unbind = function () {
   };
 
   return directive;

@@ -1,5 +1,3 @@
-/* global acutePrefix */
-
 /**
 * Default directives
 */
@@ -47,10 +45,10 @@ acute.directives["if"] = (function () {
   }
 
   IfDirective.bind = function ( element, attrValue, attrs, scope ) {
-    var inst = new IfDirective(element, attrValue, scope);
+    new IfDirective(element, attrValue, scope);
   };
 
-  IfDirective.unbind = function ( element ) {
+  IfDirective.unbind = function () {
   };
 
   return IfDirective;
@@ -64,10 +62,10 @@ acute.directives.unless = (function () {
   }
 
   UnlessDirective.bind = function ( element, attrValue, attrs, scope ) {
-    var inst = new UnlessDirective(element, attrValue, scope);
+    new UnlessDirective(element, attrValue, scope);
   };
 
-  UnlessDirective.unbind = function ( element ) {
+  UnlessDirective.unbind = function () {
   };
 
   return UnlessDirective;

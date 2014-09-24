@@ -1,11 +1,10 @@
 {
   "globals": {
     "$": true,
+    "jQuery": true,
+    "_": true,
+    "lodash": true,
     "acute": true,
-    "extend": true,
-    "isPlainObject": true,
-    "isArray": true,
-    "isFunction": true,
     "getType": true,
     "Observer": true,
     "Scope": true,
@@ -15,7 +14,16 @@
     "interpolateTextNode": true,
     "Interpolation": true
   },
+  "browser": true,
+  "devel": true,
   "undef": true,
   "browser": true,
-  "devel": true
+  "devel": true,
+  "curly": true,
+  "es3": true,
+  "eqeqeq": true,
+  "freeze": true,
+  "immed": true,
+  "latedef": "nofunc",
+  "unused": true
 }

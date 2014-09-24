@@ -6,6 +6,7 @@ acute.directives = {};
 
 var acutePrefix = "ac-";
 
+/* exported bindDirectives */
 function bindDirectives ( node, scope ) {
   var attrs = normalizeAttributes(node.attributes);
 
@@ -35,6 +36,7 @@ function bindDirectives ( node, scope ) {
 
 function bindGenericAttribute ( node, attrName, attrValue, scope ) {
   var evalFn = acute.parser.parse(attrValue);
+  /*jshint unused:false */
   var unwatches = scope.watch(evalFn.watches, function ( change ) {
     if ( change.value ) {
       node.setAttribute(attrName, change.value);

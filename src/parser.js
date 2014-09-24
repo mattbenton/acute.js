@@ -51,14 +51,12 @@ function escapePattern ( pattern ) {
 acute.parser = (function () {
   var parser = {};
 
-  var digitRegExp = /\d/;
   var propStartRegExp = /[a-z_$]/i;
   var propRegExp = /[a-z_$0-9\.]/i;
   var fullPropRegExp = /^[a-z_$]+[\.a-z0-9_$]*$/i;
   var keywordRegExp = /^true|false|null|undefined$/;
   var execEmptyArgsRegExp = /^\s*\)/;
 
-  var noop = function () {};
   var cache = parser.cache = {};
 
   parser.parse = parse;
@@ -209,7 +207,6 @@ acute.parser = (function () {
     // Object literals.
     var inObject = false;
     var isObjectField = false;
-    var isObjectValue = false;
 
     // Property capture.
     var isProperty = false;
