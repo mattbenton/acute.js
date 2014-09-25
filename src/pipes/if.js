@@ -1,6 +1,6 @@
 /* jshint evil:true */
 
-acute.formatters["if"] = (function () {
+acute.pipes["if"] = (function () {
 
   var formatter = {
     format: function ( value, options ) {

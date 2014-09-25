@@ -21,8 +21,8 @@ var sources = [
   "src/interpolation.js",
   "src/directives.js",
   "src/directives/*.js",
-  "src/formatters.js",
-  "src/formatters/*.js",
+  "src/pipes.js",
+  "src/pipes/*.js",
   // "src/polyfills.js"
 ];
 

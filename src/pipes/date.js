@@ -1,4 +1,4 @@
-acute.formatters.date = (function () {
+acute.pipes.date = (function () {
 
   var transforms = {
     // Abbreviated day name. Sun through Mon.

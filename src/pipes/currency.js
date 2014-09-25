@@ -1,6 +1,6 @@
 // https://code.google.com/p/javascript-number-formatter/
 
-acute.formatters.currency = (function () {
+acute.pipes.currency = (function () {
 
 /*  function format ( m, v ) {
     if (!m || isNaN(+v)) {

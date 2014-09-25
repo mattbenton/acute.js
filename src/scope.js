@@ -76,9 +76,9 @@ var Scope = acute.Scope = (function () {
         var name = item[0];
         var args = item[1];
 
-        var fmt = acute.formatters[name];
-        if ( fmt ) {
-          value = fmt.format(value, args, this, pathObj);
+        var pipe = acute.pipes[name];
+        if ( pipe ) {
+          value = pipe.format(value, args, this, pathObj);
         } else {
           acute.trace.f("no ", name);
         }
