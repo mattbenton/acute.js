@@ -310,7 +310,7 @@ acute.parser = (function () {
       };
       tokens.splice(index - 1, 3, group);
     } else {
-      throw new Error("cannot group op token on edge: " + JSON.stringify(op));
+      throw new Error("cannot group op token on edge: " + acute.toJson(op));
     }
   }
 

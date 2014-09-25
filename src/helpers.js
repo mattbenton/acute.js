@@ -4,30 +4,39 @@
 
 var acute = acute || {};
 
-// jQuery
-var $, jQuery;
-acute.jQuery = function ( obj ) {
-  $ = jQuery = obj;
-};
+var acuteJson = window.JSON || window.JSON3;
 
-// LoDash
-var _, lodash;
-acute.lodash = function ( obj ) {
-  _ = lodash = obj;
-};
-
-(function () {
-  var w = window;
-  var t = typeof w._;
-  if ( (t === "function" || t === "object") && w._.name === "lodash" ) {
-    acute.lodash(w._);
+var $, _;
+acute.configure = function ( options ) {
+  var value = options.$ || options.jQuery;
+  if ( value ) {
+    $ = value;
   }
 
-  t = typeof w.jQuery;
-  if ( (t === "function" || t === "object")  ) {
-    acute.jQuery(w.jQuery);
+  value = options._ || options.lodash;
+  if ( value ) {
+    _ = value;
   }
-}());
+
+  value = options.json || options.JSON;
+  if ( value ) {
+    acuteJson = value;
+  }
+};
+
+acute.toJson = function ( value, replacer, space ) {
+  if ( !acuteJson ) {
+    throw new Error("[acute] JSON is not defined");
+  }
+  return acuteJson.stringify(value, replacer, space);
+};
+
+acute.fromJson = function ( text, reviver ) {
+  if ( !acuteJson ) {
+    throw new Error("[acute] JSON is not defined");
+  }
+  return acuteJson.parse(text, reviver);
+};
 
 // var objectClass = "[object Object]";
 // var arrayClass = "[object Array]";

@@ -15,6 +15,7 @@ var sources = [
   // "src/linkedlist.js",
   "src/observer.js",
   "src/scope.js",
+  "src/dom.js",
   "src/view.js",
   // "src/parser-old.js",
   "src/parser.js",

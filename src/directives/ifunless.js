@@ -15,7 +15,10 @@ function IfUnlessDirective ( element, expr, scope, name, compareValue ) {
   this.inDom = true;
 
   this.$el = $(element);
-  this.$placeholder = $("<!-- ac-" + name + ": " + expr + " -->").insertBefore(this.$el);
+
+  this.$placeholder = $(acute.dom.createCommentNode(element.ownerDocument, "ac-" + name + ": " + expr)).insertBefore(this.$el);
+
+  // this.$placeholder = $("<!-- ac-" + name + ": " + expr + " -->").insertBefore(this.$el);
   this.compareValue = compareValue;
 
   var evalFn = this.evalFn = acute.parser.parse(expr);

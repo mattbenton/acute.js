@@ -6,8 +6,9 @@ acute.directives.repeat = (function () {
   function RepeatDirective ( $template, expr, scope ) {
     this.scope = scope;
 
-    $("<!-- ac-repeat: " + expr + " -->").insertBefore($template);
-    this.$placeholder = $("<!-- end ac-repeat -->").insertAfter($template);
+    var doc = $template[0].ownerDocument;
+    $template.before(acute.dom.createCommentNode(doc, "ac-repeat: " + expr));
+    this.$placeholder = $(acute.dom.createCommentNode(doc, "end ac-repeat")).insertAfter($template);
 
     this.$template = $template
       .removeAttr("ac-repeat")

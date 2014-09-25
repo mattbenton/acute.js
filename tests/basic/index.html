@@ -15,8 +15,15 @@
       age: 27
     };
 
-    acute.lodash(_);
-    var view = acute.view(document.getElementById("app"), model);
+    acute.configure({ lodash: _ });
+
+    var scope = new acute.Scope(model);
+    var paths = {};
+
+    var evalFn = acute.parser.parse("user | eval");
+    console.log(evalFn);
+    console.log(evalFn(scope, paths), evalFn.watches, paths);
+
   </script>
 </body>
 </html>
