@@ -58,7 +58,7 @@ acute.parser = (function () {
     }
 
     var evalFn = new Function("scope, pathObj", "return " + source);
-    evalFn.watches = watchedPaths;
+    evalFn.watches = _.keys(watchedPaths);
     cache[expr] = evalFn;
 
     return evalFn;
