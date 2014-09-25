@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+<head>
+</head>
+<body>
+  <div id="app">
+    Hello2 { user | eval }!
+  </div>
+
+  <script src="../lodash.compat.js"></script>
+  <script src="../../build/acute.js"></script>
+  <script>
+    var model = {
+      user: "Matthew Lee Benton { age }",
+      age: 27
+    };
+
+    acute.lodash(_);
+    var view = acute.view(document.getElementById("app"), model);
+  </script>
+</body>
+</html>

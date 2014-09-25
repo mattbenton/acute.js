@@ -16,6 +16,7 @@ var sources = [
   "src/observer.js",
   "src/scope.js",
   "src/view.js",
+  // "src/parser-old.js",
   "src/parser.js",
   "src/interpolation.js",
   "src/directives.js",

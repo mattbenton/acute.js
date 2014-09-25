@@ -11,12 +11,12 @@ acute.trace = {};
 
 acute.traces = [
   {
-    enabled: true,
+    // enabled: true,
     name: "interplate",
     id: "i"
   },
   {
-    enabled: true,
+    // enabled: true,
     name: "directive",
     id: "d"
   },
@@ -31,7 +31,7 @@ acute.traces = [
     id: "p"
   },
   {
-    enabled: true,
+    // enabled: true,
     name: "format",
     id: "f"
   }

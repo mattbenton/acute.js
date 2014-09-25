@@ -295,9 +295,9 @@ var Observer = acute.Observer = (function () {
     var change;
 
     if ( type !== "object" && type !== "array" ) {
-      acute.trace.s("digest", this.path, JSON.stringify(currentValue));
+      // acute.trace.s("digest", this.path, JSON.stringify(currentValue));
     } else {
-      acute.trace.s("digest", this.path, "[" + type + "]");
+      // acute.trace.s("digest", this.path, "[" + type + "]");
     }
 
     if ( type !== this.type && (this.type === "array" || this.type === "object") ) {

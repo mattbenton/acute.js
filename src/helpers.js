@@ -16,6 +16,19 @@ acute.lodash = function ( obj ) {
   _ = lodash = obj;
 };
 
+(function () {
+  var w = window;
+  var t = typeof w._;
+  if ( (t === "function" || t === "object") && w._.name === "lodash" ) {
+    acute.lodash(w._);
+  }
+
+  t = typeof w.jQuery;
+  if ( (t === "function" || t === "object")  ) {
+    acute.jQuery(w.jQuery);
+  }
+}());
+
 // var objectClass = "[object Object]";
 // var arrayClass = "[object Array]";
 // var functionClass = "[object Function]";

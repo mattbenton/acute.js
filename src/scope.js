@@ -69,25 +69,16 @@ var Scope = acute.Scope = (function () {
     }
   }
 
-  // var noOp = function () {};
-  // Scope.prototype.exec = function ( path ) {
-  //   var fn = this.get(path);
-  //   if ( fn && isFunction(fn) ) {
-  //     return fn;
-  //   }
-  //   return noOp;
-  // };
-
-  Scope.prototype.filter = function ( filters, value, other ) {
-    if ( filters.length ) {
-      for ( var i = 0, len = filters.length; i < len; i++ ) {
-        var item = filters[i];
+  Scope.prototype.pipe = function ( pipes, value, pathObj ) {
+    if ( pipes.length ) {
+      for ( var i = 0, len = pipes.length; i < len; i++ ) {
+        var item = pipes[i];
         var name = item[0];
         var args = item[1];
 
         var fmt = acute.formatters[name];
         if ( fmt ) {
-          value = fmt.format(value, args, this, other);
+          value = fmt.format(value, args, this, pathObj);
         } else {
           acute.trace.f("no ", name);
         }

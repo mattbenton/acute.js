@@ -5,6 +5,7 @@
 <body>
   <script>var acute = {};</script>
   <script src="json3.js"></script>
+  <script src="../src/log.js"></script>
   <script src="../src/parser.js"></script>
   <script src="../src/parser2.js"></script>
   <script>
@@ -22,6 +23,22 @@
       console.log("error", error);
     } else {
       console.log("error", errorMsg, url, lineNumber, column, errorObj);
+    }
+  };
+
+  var scope = {
+    get: function ( name ) {
+      console.debug("get", name);
+      return "{" + name + "}";
+    },
+    set: function ( name, value ) {
+      console.debug("set", name, "to", value);
+    },
+    exec: function ( name, args ) {
+      console.debug("exec", name, "args", args);
+    },
+    pipe: function ( name ) {
+      console.debug("pipe", arguments);
     }
   };
 
