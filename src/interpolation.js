@@ -5,6 +5,8 @@
 var interpolateRegExp = /\{\s*([^}]+)\s*\}/;
 var interpolateRegExpGlobal = /\{\s*([^}]+)\s*\}/g;
 
+exports.Interpolation = Interpolation;
+
 function Interpolation ( textOrNode, scope ) {
   this.scope = scope;
 
@@ -90,7 +92,7 @@ Interpolation.prototype.onChange = function () {
   }
 };
 
-Interpolation.interpolate = function ( textOrNode, scope ) {
+exports.interpolate = function ( textOrNode, scope ) {
   var text = (typeof textOrNode === "string") ? textOrNode : textOrNode.nodeValue;
   if ( interpolateRegExp.test(text) ) {
     return new Interpolation(textOrNode, scope);

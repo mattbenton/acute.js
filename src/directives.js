@@ -1,13 +1,19 @@
-/**
-* Default directives
-*/
+var ifunless = require("./directives/ifunless");
 
-acute.directives = {};
+// Default directives
+var directives =  exports.directives = {
+  "class":  require("./directives/class"),
+  "click":  require("./directives/click"),
+  "html":   require("./directives/html"),
+  "if":     ifunless["if"],
+  "unless": ifunless["unless"],
+  "repeat": require("./directives/repeat"),
+  "show":   require("./directives/show")
+};
 
 var acutePrefix = "ac-";
 
-/* exported bindDirectives */
-function bindDirectives ( node, scope ) {
+exports.bind = function bindDirectives ( node, scope ) {
   var attrs = normalizeAttributes(node.attributes);
 
   var preventFutherBinding = false;
@@ -18,7 +24,7 @@ function bindDirectives ( node, scope ) {
     if ( name.indexOf(acutePrefix) === 0 ) {
       name = name.replace(acutePrefix, "");
 
-      var directive = acute.directives[name];
+      var directive = directives[name];
       if ( directive ) {
         directive.bind(node, attrValue, attrs, scope);
         if ( directive.stop ) {
@@ -32,7 +38,7 @@ function bindDirectives ( node, scope ) {
   }
 
   return preventFutherBinding;
-}
+};
 
 function bindGenericAttribute ( node, attrName, attrValue, scope ) {
   var evalFn = acute.parser.parse(attrValue);

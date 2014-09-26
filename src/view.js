@@ -1,6 +1,9 @@
 var ELEMENT_NODE = 1;
 var TEXT_NODE = 3;
 
+var Scope = require("./scope").Scope;
+var bindDirectives = require("./directives").bind;
+
 function View ( element, modelOrScope ) {
   this.element = element;
 
@@ -22,14 +25,6 @@ View.prototype.destroy = function () {
   this.model = null;
 };
 
-acute.view = function ( element, model ) {
-  if ( element ) {
-    var view = new View(element, model);
-    return view;
-  }
-  throw new Error("[acute] invalid element passed to view()");
-};
-
 function bindView ( view, element, scope ) {
   if ( bindDirectives(element, scope) ) {
     return;
@@ -49,10 +44,21 @@ function bindView ( view, element, scope ) {
         bindView(view, node, scope);
       }
       else if ( nodeType === TEXT_NODE ) {
-        Interpolation.interpolate(node, scope);
+        acute.interpolate(node, scope);
       }
 
       node = nextSibling;
     }
   }
 }
+
+exports.View = View;
+exports.bind = bindView;
+
+exports.create = function ( element, model ) {
+  if ( element ) {
+    var view = new View(element, model);
+    return view;
+  }
+  throw new Error("[acute] invalid element passed to view()");
+};
