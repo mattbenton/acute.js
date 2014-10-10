@@ -51,10 +51,8 @@ function parse ( expr ) {
 
   // Separate expression from pipe chain.
   var match = expr.match(exprPipeChainRegExp);
-  console.debug("exprPipeChainRegExp", match);
 
   var tokens = tokenize(match[1]);
-  console.debug(acute.toJson(tokens));
   groupTokens(tokens);
   var source = getSource(tokens, watchedPaths);
 
@@ -63,13 +61,11 @@ function parse ( expr ) {
     source = "scope.pipe(" + pipeSource + ", " + source + ", pathObj)";
   }
 
-  return source;
+  var evalFn = new Function("scope, pathObj", "return " + source);
+  evalFn.watches = acute.keys(watchedPaths);
+  cache[expr] = evalFn;
 
-  // var evalFn = new Function("scope, pathObj", "return " + source);
-  // evalFn.watches = acute.keys(watchedPaths);
-  // cache[expr] = evalFn;
-
-  // return evalFn;
+  return evalFn;
 }
 
 /**
