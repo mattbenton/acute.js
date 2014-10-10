@@ -7,30 +7,47 @@ var gzip       = require("gulp-gzip");
 var rename     = require("gulp-rename");
 var size       = require("gulp-size");
 var docco      = require("gulp-docco");
-var lazypipe   = require("lazypipe");
-var wrapper    = require("gulp-wrapper");
+var mocha      = require("gulp-mocha");
 var notify     = require("gulp-notify");
 
-var wrap = lazypipe()
-  .pipe(wrapper, {
-     header: "(function () { var acute, $, _; \n",
-     footer: "\n}());"
-  });
+gulp.task("lint", function () {
+  return gulp.src("src/**/*.js")
+    .pipe(jshint())
+    .pipe(jshint.reporter("jshint-stylish"))
+    .pipe(notify(function ( file ) {
+      if ( file.jshint.success ) {
+        // Don't show something if success
+        return false;
+      }
+      var errors = file.jshint.results.map(function (data) {
+        if (data.error) {
+          return "(" + data.error.line + ':' + data.error.character + ') ' + data.error.reason;
+        }
+      }).join("\n");
+      return file.relative + " (" + file.jshint.results.length + " errors)\n" + errors;
+    }));
+});
 
-gulp.task("build", function () {
-  gulp.src("src/acute.js", { read: false })
+gulp.task("test", function () {
+  gulp.src("src/boot.js", { read: false })
+    .pipe(browserify())
+    .pipe(mocha());
+});
+
+gulp.task("build", ["lint"], function () {
+  gulp.src("src/boot.js", { read: false })
     .pipe(browserify())
     .pipe(size())
-    .pipe(wrap())
+    .pipe(rename("acute.js"))
     .pipe(gulp.dest("build"))
-    .pipe(gulp.dest("/Users/matt/work/fanplayr/repos/client-runtime/src/acute"))
+    // .pipe(gulp.dest("/Users/matt/work/fanplayr/repos/client-runtime/src/acute"))
+    .pipe(gulp.dest("/Users/matt/work/fanplayr/repos/cr/src/platform/vendor"))
     .pipe(notify("Built: <%= file.relative %>"));
 });
 
-gulp.task("package", function () {
-  gulp.src("src/acute.js", { read: false })
+gulp.task("package", ["build"], function () {
+  gulp.src("src/boot.js", { read: false })
     .pipe(browserify())
-    .pipe(wrap())
     .pipe(uglify())
     .pipe(rename("acute.min.js"))
     .pipe(size())

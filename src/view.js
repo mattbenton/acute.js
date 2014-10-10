@@ -1,6 +1,7 @@
 var ELEMENT_NODE = 1;
 var TEXT_NODE = 3;
 
+var acute = require("./acute");
 var Scope = require("./scope").Scope;
 var bindDirectives = require("./directives").bind;
 
@@ -60,5 +61,5 @@ exports.create = function ( element, model ) {
     var view = new View(element, model);
     return view;
   }
-  throw new Error("[acute] invalid element passed to view()");
+  acute.error("invalid element passed to view()");
 };

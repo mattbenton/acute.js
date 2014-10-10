@@ -1,5 +1,7 @@
+var acute = require("../acute");
+
 exports.bind = function ( element, attrValue, attrs, scope ) {
-  var el = $(element);
+  var el = acute.element(element);
   el.on("click", function () {
     if ( attrValue ) {
       scope.$eval(attrValue);
@@ -9,5 +11,4 @@ exports.bind = function ( element, attrValue, attrs, scope ) {
 };
 
 exports.unbind = function () {
-
 };

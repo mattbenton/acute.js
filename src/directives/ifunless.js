@@ -1,4 +1,6 @@
-var parse = require("../parser").parse;
+/*jshint sub:true */
+
+var acute = require("../acute");
 
 /**
 * Adds or removes an element from its position in the DOM
@@ -12,14 +14,13 @@ function IfUnlessDirective ( element, expr, scope, name, compareValue ) {
 
   this.inDom = true;
 
-  this.$el = $(element);
+  this.$el = acute.element(element);
 
-  this.$placeholder = $(acute.dom.createCommentNode(element.ownerDocument, "ac-" + name + ": " + expr)).insertBefore(this.$el);
+  this.$placeholder = acute.element(acute.dom.createCommentNode(element.ownerDocument, "ac-" + name + ": " + expr)).insertBefore(this.$el);
 
-  // this.$placeholder = $("<!-- ac-" + name + ": " + expr + " -->").insertBefore(this.$el);
   this.compareValue = compareValue;
 
-  var evalFn = this.evalFn = parse(expr);
+  var evalFn = this.evalFn = acute.parser.parse(expr);
   if ( evalFn.watches ) {
     scope.watch(evalFn.watches, { context: this }, this.update);
   }
@@ -41,7 +42,7 @@ IfUnlessDirective.prototype.update = function ( change ) {
 
 exports["if"] = {
   bind: function ( element, attrValue, attrs, scope ) {
-    new IfUnlessDirective(element, attrValue, scope, "if", true)
+    new IfUnlessDirective(element, attrValue, scope, "if", true);
   },
   unbind: function () {
 
@@ -50,7 +51,7 @@ exports["if"] = {
 
 exports["unless"] = {
   bind: function ( element, attrValue, attrs, scope ) {
-    new IfUnlessDirective(element, attrValue, scope, "unless", false)
+    new IfUnlessDirective(element, attrValue, scope, "unless", false);
   },
   unbind: function () {
 

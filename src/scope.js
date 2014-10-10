@@ -4,6 +4,7 @@
 
 /* jshint evil: true */
 
+var acute = require("./acute");
 var Observer = require("./observer").Observer;
 var parse = require("./parser").parse;
 
@@ -17,7 +18,7 @@ var allScopes = Scope.all = [];
 
 Scope.digestAll = function () {
   if ( inDigest ) {
-    throw new Error("[acute] already in main digest!");
+    acute.error("already in main digest!");
   } else {
     try {
       inDigest = true;
@@ -50,7 +51,7 @@ Scope.prototype.$eval = function ( expr, resultFn ) {
 Scope.prototype.exec = function ( path ) {
   var args = Array.prototype.slice.call(arguments, 1);
   var fn = this.get(path);
-  if ( fn && _.isFunction(fn) ) {
+  if ( fn && acute.isFunction(fn) ) {
     var contextPath = getPreviousPathSegment(path);
     if ( contextPath ) {
       var context = this.get(contextPath);

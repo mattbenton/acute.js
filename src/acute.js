@@ -1,59 +1,122 @@
-// acute, $ and _ are defined in header of build.
+var root = window;
 
-var scope = require("./scope");
+// Hook up JSON.
+var _JSON = root.JSON || root.JSON3 || root.JSON2;
 
-acute = {
-  log:           require("./log"),
-  dom:           require("./dom"),
-  parser:        require("./parser"),
-  interpolate:   require("./interpolation").interpolate,
-  pipes:         require("./pipes").pipes,
-  directives:    require("./directives").directives,
-  Scope:         scope.Scope,
-  digest:        scope.Scope.digestAll,
-  view:          require("./view").create,
-  utils:         require("./utils")
+var acute = module.exports = {
+  configure: function ( options ) {
+    var value = options.$ || options.jQuery;
+    if ( value ) {
+      acute.element = value;
+    }
+
+    value = options._ || options.lodash;
+    if ( value ) {
+      hookLoDash(value);
+    }
+
+    value = options.json || options.JSON;
+    if ( value ) {
+      _JSON = value;
+    }
+  },
+
+  error: error,
+
+  element: function () {
+    error("jQuery is not defined");
+  },
+
+  toJson: function ( value, replacer, space ) {
+    if ( !_JSON ) {
+      error("JSON is not defined");
+    }
+    return _JSON.stringify(value, replacer, space);
+  },
+
+  fromJson: function ( text, reviver ) {
+    if ( !_JSON ) {
+      error("JSON is not defined");
+    }
+    return _JSON.parse(text, reviver);
+  },
+
+  getType: function ( value ) {
+    if ( value === null ) {
+      return "null";
+    }
+    var type = typeof value;
+    if ( type === "object" ) {
+      if ( acute.isPlainObject(value) ) { return "object"; }
+      if ( acute.isArray(value) ) { return "array"; }
+      return "complex";
+    }
+    return type;
+  }
 };
 
-acute.configure = function ( options ) {
-  var value = options.$ || options.jQuery;
-  if ( value ) {
-    $ = value;
-  }
+var lodashMethods = [
+  // Arrays
+  "indexOf",
 
-  value = options._ || options.lodash;
-  if ( value ) {
-    _ = value;
-  }
+  // Collections
+  "contains",
+  "each",
+  "filter",
+  "find",
+  "forEach",
+  "map",
 
-  value = options.json || options.JSON;
-  if ( value ) {
-    acuteJson = value;
-  }
-};
+  // Functions
+  "bind",
+  "debounce",
+  "defer",
+  "delay",
+  "throttle",
 
-acute.toJson = function ( value, replacer, space ) {
-  if ( !acuteJson ) {
-    throw new Error("[acute] JSON is not defined");
-  }
-  return acuteJson.stringify(value, replacer, space);
-};
+  // Objects
+  "clone",
+  "cloneDeep",
+  "isArray",
+  "isFunction",
+  "isPlainObject",
+  "keys",
+  "merge"
+];
 
-acute.fromJson = function ( text, reviver ) {
-  if ( !acuteJson ) {
-    throw new Error("[acute] JSON is not defined");
-  }
-  return acuteJson.parse(text, reviver);
-};
-
-function factory () {
-  return acute;
+// Hook up jQuery.
+var jQuery = root.jQuery;
+if ( jQuery ) {
+  acute.element = jQuery;
 }
 
-if ( typeof define !== "undefined" && define.amd ) {
-  define(factory);
-} else if ( typeof fanplayr === "object" && fanplayr.define !== "undefined" && fanplayr.define.amd ) {
-  fanplayr.define(factory);
+function lodashNoop () {
+  error("LoDash is not defined");
+}
+
+// Hook up LoDash.
+function hookLoDash ( lodash ) {
+  for ( var i = 0; i < lodashMethods.length; i++ ) {
+    var method = lodashMethods[i];
+    if ( lodash ) {
+      if ( lodash.hasOwnProperty(method) ) {
+        acute[method] = lodash[method];
+      } else {
+        error("LoDash missing method '" + method + "'");
+      }
+    } else {
+      acute[method] = lodashNoop;
+    }
+  }
+}
+
+var lodash = root._;
+if ( /function|object/.test(typeof lodash) && lodash.name === "lodash" ) {
+  hookLoDash(lodash);
 } else {
-  window.acute = acute;
+  hookLoDash();
+}
+
+function error ( message ) {
+  throw new Error("[acute] " + message);
 }

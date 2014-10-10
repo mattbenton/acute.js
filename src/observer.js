@@ -1,4 +1,4 @@
-var utils = require("./utils");
+var acute = require("./acute");
 
 var UUID = 0;
 function nextUUID () {
@@ -39,16 +39,16 @@ Observer.prototype.watch = function ( pathOrObj, options, callback ) {
     options = {};
   }
 
-  options = _.merge({
+  options = acute.merge({
     init: true, // notify initial state as changes
     context: null // callback execution context
   }, options);
 
-  if ( !_.isPlainObject(options) ) {
+  if ( !acute.isPlainObject(options) ) {
     throw new Error("[acute] watch options must be an object");
   }
 
-  if ( !_.isFunction(callback) ) {
+  if ( !acute.isFunction(callback) ) {
     throw new Error("[acute] watch callback must be a function");
   }
 
@@ -64,7 +64,7 @@ Observer.prototype.watch = function ( pathOrObj, options, callback ) {
   if ( typeof pathOrObj === "string" ) {
     watch = this.getWatch(pathOrObj);
     unwatches = watch.add(listener, options.init);
-  } else if ( _.isPlainObject(pathOrObj) ) {
+  } else if ( acute.isPlainObject(pathOrObj) ) {
     unwatches = {};
     for ( var path in pathOrObj ) {
       if ( pathOrObj[path] ) {
@@ -72,7 +72,7 @@ Observer.prototype.watch = function ( pathOrObj, options, callback ) {
         unwatches[path] = watch.add(listener, options.init);
       }
     }
-  } else if ( _.isArray(pathOrObj) ) {
+  } else if ( acute.isArray(pathOrObj) ) {
     unwatches = {};
     for ( var i = 0, len = pathOrObj.length; i < len; i++ ) {
       watch = this.getWatch(pathOrObj[i]);
@@ -105,7 +105,7 @@ Observer.prototype.unwatch = function ( watchId ) {
     } else {
       throw new Error("Attempted to unwatch non-existent path for id '" + watchId + "'");
     }
-  } else if ( _.isArray(watchId) ) {
+  } else if ( acute.isArray(watchId) ) {
     for ( var i = 0, len = watchId.length; i < len; i++ ) {
       this.unwatch(watchId[i]);
     }
@@ -289,17 +289,17 @@ Watch.prototype.digest = function () {
 
   // var currentValue = pathInfo.value;
   // var type = pathInfo.type;
-  var type = utils.getType(currentValue);
+  var type = acute.getType(currentValue);
   var change;
 
   if ( type !== "object" && type !== "array" ) {
-    // acute.trace.s("digest", this.path, JSON.stringify(currentValue));
+    // acute.log("digest", this.path, JSON.stringify(currentValue));
   } else {
-    // acute.trace.s("digest", this.path, "[" + type + "]");
+    // acute.log("digest", this.path, "[" + type + "]");
   }
 
   if ( type !== this.type && (this.type === "array" || this.type === "object") ) {
-    acute.trace.s("changed from array or object to other. remove children");
+    // acute.log("changed from array or object to other. remove children");
     didRemoveChildren = this.removeChildren();
   }
 
@@ -308,9 +308,9 @@ Watch.prototype.digest = function () {
   } else if ( type === "object" ) {
     didChange = this.digestObject(currentValue);
   } else {
-    // acute.trace.s("digest other", currentValue);
+    // acute.log("digest other", currentValue);
     if ( currentValue !== this.value ) {
-      // acute.trace.s(this.path, "changed");
+      // acute.log(this.path, "changed");
 
       change = new ChangeRecord(this);
       change.value = currentValue;
@@ -331,7 +331,7 @@ Watch.prototype.digest = function () {
 // };
 
 Watch.prototype.digestObject = function ( context ) {
-  // acute.trace.s("digset object", context);
+  // acute.log("digset object", context);
 
   var children = this.children;
   if ( !children ) {
@@ -349,7 +349,7 @@ Watch.prototype.digestObject = function ( context ) {
 
     if ( !child ) {
       // new item
-      // acute.trace.s("add", prop, value, child);
+      // acute.log("add", prop, value, child);
       children[prop] = {};
       changes.push({
         path: this.path + "." + prop,
@@ -363,7 +363,7 @@ Watch.prototype.digestObject = function ( context ) {
   for ( prop in children ) {
     if ( !context.hasOwnProperty(prop) ) {
       // remove
-      // acute.trace.s("remove", prop);
+      // acute.log("remove", prop);
       delete children[prop];
       changes.push({
         path: this.path + "." + prop,
@@ -386,7 +386,7 @@ Watch.prototype.digestObject = function ( context ) {
 };
 
 Watch.prototype.digestArray = function ( context ) {
-  // acute.trace.s("digset array", context);
+  // acute.log("digset array", context);
 
   var children = this.children;
   if ( !children ) {
@@ -400,7 +400,7 @@ Watch.prototype.digestArray = function ( context ) {
   var child, uid, value, type;
   for ( var index = 0, len = context.length; index < len; index++ ) {
     value = context[index];
-    type = utils.getType(value);
+    type = acute.getType(value);
 
     if ( type !== "object" ) {
       throw new Error("[acute] cannot digest array with non-object values, path: '" + this.path + "'");
@@ -428,13 +428,13 @@ Watch.prototype.digestArray = function ( context ) {
           data: child.data
         });
 
-        // acute.trace.s("moved", child, "from", child.index, "to", index);
+        // acute.log("moved", child, "from", child.index, "to", index);
         child.index = index;
       }
     } else {
       // added
       child = children[uid] = { value: value, index: index, data: {} };
-      // acute.trace.s("added", child);
+      // acute.log("added", child);
       changes.push({
         path: this.path + "[" + index + "]",
         type: "add",
@@ -456,7 +456,7 @@ Watch.prototype.digestArray = function ( context ) {
         index: child.index,
         data: child.data
       });
-      // acute.trace.s("removed", child);
+      // acute.log("removed", child);
       delete children[uid];
     }
   }

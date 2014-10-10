@@ -8,14 +8,13 @@
   </div>
 
   <script src="../lodash.compat.js"></script>
+  <script src="../jquery-1.11.1.js"></script>
   <script src="../../build/acute.js"></script>
   <script>
     var model = {
       user: "Matthew Lee Benton { age }",
       age: 27
     };
-
-    acute.configure({ lodash: _ });
 
     var scope = new acute.Scope(model);
     var paths = {};

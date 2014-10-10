@@ -1,11 +1,11 @@
-var parse = require("../parser").parse;
+var acute = require("../acute");
 
 exports.bind = function ( element, attrValue, attrs, scope ) {
-  var evalFn = parse(attrValue);
+  var evalFn = acute.parser.parse(attrValue);
   if ( evalFn.watches ) {
     var updateFn = function () {
       var result = evalFn(scope);
-      $(element).toggleClass("ac-hide", !Boolean(result));
+      acute.element(element).toggleClass("ac-hide", !Boolean(result));
     };
     scope.watch(evalFn.watches, updateFn);
   }

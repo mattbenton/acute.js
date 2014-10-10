@@ -30,3 +30,5 @@ function LinkedListAccessor ( head, tail, prev, next ) {
 
   // this.replace = new Function("o, i, r");
 }
+
+exports = LinkedListAccessor;

@@ -1,5 +1,7 @@
+var acute = require("../acute");
+
 exports.bind = function ( element, attrValue, attrs, scope ) {
-  new RepeatDirective($(element), attrValue, scope);
+  new RepeatDirective(acute.element(element), attrValue, scope);
 };
 
 exports.unbind = function () {
@@ -13,7 +15,7 @@ function RepeatDirective ( $template, expr, scope ) {
 
   var doc = $template[0].ownerDocument;
   $template.before(acute.dom.createCommentNode(doc, "ac-repeat: " + expr));
-  this.$placeholder = $(acute.dom.createCommentNode(doc, "end ac-repeat")).insertAfter($template);
+  this.$placeholder = acute.element(acute.dom.createCommentNode(doc, "end ac-repeat")).insertAfter($template);
 
   this.$template = $template
     .removeAttr("ac-repeat")

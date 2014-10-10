@@ -2,6 +2,8 @@
 // Will probably have to be a function to parse them.
 // Can still use this to detect interpolation tags though.
 
+var parse = require("./parser").parse;
+
 var interpolateRegExp = /\{\s*([^}]+)\s*\}/;
 var interpolateRegExpGlobal = /\{\s*([^}]+)\s*\}/g;
 
@@ -35,7 +37,7 @@ function Interpolation ( textOrNode, scope ) {
       parts.push(leftStr);
     }
 
-    var evalFn = acute.parser.parse(source);
+    var evalFn = parse(source);
     if ( evalFn ) {
       for ( var i = 0, len = evalFn.watches.length; i < len; i++ ) {
         watchedPaths[evalFn.watches[i]] = true;

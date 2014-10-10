@@ -1,8 +1,8 @@
-var parse = require("../parser").parse;
+var acute = require("../acute");
 
 exports.bind = function ( element, attrValue, attrs, scope ) {
-  var evalFn = parse(attrValue);
-  var $el = $(element);
+  var evalFn = acute.parser.parse(attrValue);
+  var $el = acute.element(element);
   scope.watch(evalFn.watches, function () {
     var classes = evalFn(scope);
     for ( var klass in classes ) {

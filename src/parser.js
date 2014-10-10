@@ -1,5 +1,7 @@
 /* jshint evil: true */
 
+var acute = require("./acute");
+
 /**
 * Parser
 *
@@ -22,10 +24,12 @@ var pathRegExp = /^[a-zA-Z$_]+[a-zA-Z0-9$_.]*/;
 var reservedWordRegExp = /^true|false|null|undefined|new|Date$/;
 
 // Matches anything that lools like an interger or float.
-var numberRegExp = /^-?(?:\.\d+|\d+|\d+\.\d+)/;
+var numberRegExp = /^-?(?:\d+\.\d+|\.\d+|\d+)/;
 
 // Separates an expresssion and optional pipe chain.
-var exprPipeChainRegExp = /^(.*?)(?:\s*\|\s*(.*))?$/;
+// var exprPipeChainRegExp = /^(.*?)\s*(?:\|[^\\]\s*(.+))?$/;
+// var exprPipeChainRegExp = /^(.*?)$/;
+var exprPipeChainRegExp = /^(.*?[^|])(?:\|[^|](.*))?$/;
 
 module.exports = {
   parse: parse,
@@ -47,8 +51,10 @@ function parse ( expr ) {
 
   // Separate expression from pipe chain.
   var match = expr.match(exprPipeChainRegExp);
+  console.debug("exprPipeChainRegExp", match);
 
   var tokens = tokenize(match[1]);
+  console.debug(acute.toJson(tokens));
   groupTokens(tokens);
   var source = getSource(tokens, watchedPaths);
 
@@ -57,11 +63,13 @@ function parse ( expr ) {
     source = "scope.pipe(" + pipeSource + ", " + source + ", pathObj)";
   }
 
-  var evalFn = new Function("scope, pathObj", "return " + source);
-  evalFn.watches = _.keys(watchedPaths);
-  cache[expr] = evalFn;
+  return source;
 
-  return evalFn;
+  // var evalFn = new Function("scope, pathObj", "return " + source);
+  // evalFn.watches = acute.keys(watchedPaths);
+  // cache[expr] = evalFn;
+
+  // return evalFn;
 }
 
 /**

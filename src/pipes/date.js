@@ -1,3 +1,5 @@
+var acute = require("../acute");
+
 var transforms = {
   // Abbreviated day name. Sun through Mon.
   a: function ( date, options ) {
@@ -82,7 +84,7 @@ function strftime ( date, format, options ) {
     date = new Date(date);
   }
   if ( !(date instanceof Date) ) {
-    throw new Error("Date formatter value must be a date or integer");
+    acute.error("Date formatter value must be a date or integer");
   }
   return format.replace(/%([aAdebBmyYHkIlMpPS])/g, function ( line, symbol ) {
     var fn = transforms[symbol];

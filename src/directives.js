@@ -1,4 +1,7 @@
+/*jshint sub:true */
+
 var ifunless = require("./directives/ifunless");
+var parse = require("./parser").parse;
 
 // Default directives
 var directives =  exports.directives = {
@@ -8,7 +11,8 @@ var directives =  exports.directives = {
   "if":     ifunless["if"],
   "unless": ifunless["unless"],
   "repeat": require("./directives/repeat"),
-  "show":   require("./directives/show")
+  "show":   require("./directives/show"),
+  "value":  require("./directives/value")
 };
 
 var acutePrefix = "ac-";
@@ -41,7 +45,7 @@ exports.bind = function bindDirectives ( node, scope ) {
 };
 
 function bindGenericAttribute ( node, attrName, attrValue, scope ) {
-  var evalFn = acute.parser.parse(attrValue);
+  var evalFn = parse(attrValue);
   /*jshint unused:false */
   var unwatches = scope.watch(evalFn.watches, function ( change ) {
     if ( change.value ) {
