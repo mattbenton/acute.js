@@ -60,23 +60,23 @@ var lodashMethods = [
   "indexOf",
 
   // Collections
-  "contains",
+  // "contains",
   "each",
   "filter",
   "find",
-  "forEach",
+  // "forEach",
   "map",
 
   // Functions
-  "bind",
+  // "bind",
   "debounce",
-  "defer",
-  "delay",
+  // "defer",
+  // "delay",
   "throttle",
 
   // Objects
-  "clone",
-  "cloneDeep",
+  // "clone",
+  // "cloneDeep",
   "isArray",
   "isFunction",
   "isPlainObject",

@@ -1,6 +1,6 @@
 (function ( factory ) {
   if ( typeof fanplayr !== "undefined" && fanplayr.define ) {
-    fanplayr.define(factory);
+    fanplayr.define("acute", factory);
   }
   else if ( typeof define !== "undefined" && define.amd ) {
     define(factory);
