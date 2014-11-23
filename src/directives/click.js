@@ -1,24 +1,14 @@
-/**
-* Default directives
-*/
+var acute = require("../acute");
 
-acute.directives.click = (function () {
+exports.bind = function ( element, attrValue, attrs, scope ) {
+  var el = acute.element(element);
+  el.on("click", function () {
+    if ( attrValue ) {
+      scope.$eval(attrValue);
+    }
+    return false;
+  });
+};
 
-  var directive = {};
-  directive.bind = function ( element, attrValue, attrs, scope ) {
-    var el = $(element);
-    el.on("click", function () {
-      if ( attrValue ) {
-        scope.$eval(attrValue);
-      }
-      return false;
-    });
-  };
-
-  directive.unbind = function () {
-
-  };
-
-  return directive;
-
-}());
+exports.unbind = function () {
+};

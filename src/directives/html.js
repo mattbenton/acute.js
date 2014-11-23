@@ -1,26 +1,16 @@
-/**
-* Default directives
-*/
+var acute = require("../acute");
 
-acute.directives.html = (function () {
+exports.bind = function ( element, attrValue, attrs, scope ) {
+  var $el = acute.element(element);
+  var evalFn = acute.parser.parse(attrValue);
+  scope.watch(evalFn.watches, function ( change ) {
+    if ( change.value ) {
+      $el.html(evalFn(scope));
+    } else {
+      $el.html('');
+    }
+  });
+};
 
-  var directive = {};
-
-  directive.bind = function ( element, attrValue, attrs, scope ) {
-    var $el = $(element);
-    var evalFn = acute.parser.parse(attrValue);
-    scope.watch(evalFn.watches, function ( change ) {
-      if ( change.value ) {
-        $el.html(evalFn(scope, acute.format));
-      } else {
-        $el.html('');
-      }
-    });
-  };
-
-  directive.unbind = function () {
-  };
-
-  return directive;
-
-}());
+exports.unbind = function () {
+};

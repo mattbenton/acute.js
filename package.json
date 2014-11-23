@@ -22,13 +22,9 @@
   },
   "homepage": "https://github.com/mattbenton/acute.js",
   "devDependencies": {
-    "grunt": "^0.4.5",
-    "grunt-bytesize": "^0.1.1",
-    "grunt-contrib-clean": "^0.6.0",
-    "grunt-contrib-jshint": "^0.10.0",
-    "grunt-contrib-requirejs": "^0.4.4",
-    "grunt-contrib-uglify": "^0.5.1",
-    "grunt-contrib-watch": "^0.6.1",
+    "chai": "^1.9.1",
+    "chai-fuzzy": "^1.4.0",
+    "chai-jquery": "^1.2.3",
     "gulp": "^3.8.7",
     "gulp-browserify": "^0.5.0",
     "gulp-concat": "^2.3.4",
@@ -36,12 +32,17 @@
     "gulp-gzip": "0.0.8",
     "gulp-jsdoc": "^0.1.4",
     "gulp-jshint": "^1.8.4",
+    "gulp-mocha": "^1.1.0",
     "gulp-mox": "0.0.3",
     "gulp-notify": "^1.6.0",
     "gulp-rename": "^1.2.0",
     "gulp-size": "^1.0.0",
     "gulp-uglify": "^0.3.1",
     "gulp-watch": "^0.6.9",
-    "jshint-stylish": "^0.4.0"
+    "gulp-wrapper": "^0.1.5",
+    "jshint-stylish": "^0.4.0",
+    "lazypipe": "^0.2.2",
+    "lodash": "^2.4.1",
+    "underscore": "^1.7.0"
   }
 }

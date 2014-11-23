@@ -1,26 +1,15 @@
-/**
-* Default directives
-*/
+var acute = require("../acute");
 
-acute.directives["class"] = (function () {
+exports.bind = function ( element, attrValue, attrs, scope ) {
+  var evalFn = acute.parser.parse(attrValue);
+  var $el = acute.element(element);
+  scope.watch(evalFn.watches, function () {
+    var classes = evalFn(scope);
+    for ( var klass in classes ) {
+      $el.toggleClass(klass, Boolean(classes[klass]));
+    }
+  });
+};
 
-  var directive = {};
-
-  directive.bind = function ( element, attrValue, attrs, scope ) {
-    var evalFn = acute.parser.parse(attrValue);
-    var $el = $(element);
-    scope.watch(evalFn.watches, function () {
-      var classes = evalFn(scope);
-      acute.trace.d("classes", classes);
-      for ( var klass in classes ) {
-        $el.toggleClass(klass, Boolean(classes[klass]));
-      }
-    });
-  };
-
-  directive.unbind = function () {
-  };
-
-  return directive;
-
-}());
+exports.unbind = function () {
+};
