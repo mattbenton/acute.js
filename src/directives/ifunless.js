@@ -1,6 +1,6 @@
-/**
-* Default directives
-*/
+/*jshint sub:true */
+
+var acute = require("../acute");
 
 /**
 * Adds or removes an element from its position in the DOM
@@ -14,11 +14,10 @@ function IfUnlessDirective ( element, expr, scope, name, compareValue ) {
 
   this.inDom = true;
 
-  this.$el = $(element);
+  this.$el = acute.element(element);
 
-  this.$placeholder = $(acute.dom.createCommentNode(element.ownerDocument, "ac-" + name + ": " + expr)).insertBefore(this.$el);
+  this.$placeholder = acute.element(acute.dom.createCommentNode(element.ownerDocument, "ac-" + name + ": " + expr)).insertBefore(this.$el);
 
-  // this.$placeholder = $("<!-- ac-" + name + ": " + expr + " -->").insertBefore(this.$el);
   this.compareValue = compareValue;
 
   var evalFn = this.evalFn = acute.parser.parse(expr);
@@ -41,36 +40,20 @@ IfUnlessDirective.prototype.update = function ( change ) {
   }
 };
 
-acute.directives["if"] = (function () {
+exports["if"] = {
+  bind: function ( element, attrValue, attrs, scope ) {
+    new IfUnlessDirective(element, attrValue, scope, "if", true);
+  },
+  unbind: function () {
 
-  function IfDirective ( element, expr, scope ) {
-    this.inner = new IfUnlessDirective(element, expr, scope, "if", true);
   }
+};
 
-  IfDirective.bind = function ( element, attrValue, attrs, scope ) {
-    new IfDirective(element, attrValue, scope);
-  };
+exports["unless"] = {
+  bind: function ( element, attrValue, attrs, scope ) {
+    new IfUnlessDirective(element, attrValue, scope, "unless", false);
+  },
+  unbind: function () {
 
-  IfDirective.unbind = function () {
-  };
-
-  return IfDirective;
-
-}());
-
-acute.directives.unless = (function () {
-
-  function UnlessDirective ( element, expr, scope ) {
-    this.inner = new IfUnlessDirective(element, expr, scope, "unless", false);
   }
-
-  UnlessDirective.bind = function ( element, attrValue, attrs, scope ) {
-    new UnlessDirective(element, attrValue, scope);
-  };
-
-  UnlessDirective.unbind = function () {
-  };
-
-  return UnlessDirective;
-
-}());
+};

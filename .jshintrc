@@ -1,29 +1,17 @@
 {
-  "globals": {
-    "$": true,
-    "jQuery": true,
-    "_": true,
-    "lodash": true,
-    "acute": true,
-    "getType": true,
-    "Observer": true,
-    "Scope": true,
-    "ELEMENT_NODE": true,
-    "TEXT_NODE": true,
-    "bindDirectives": true,
-    "interpolateTextNode": true,
-    "Interpolation": true
-  },
   "browser": true,
   "devel": true,
+  "node": true,
   "undef": true,
-  "browser": true,
-  "devel": true,
   "curly": true,
   "es3": true,
   "eqeqeq": true,
   "freeze": true,
   "immed": true,
   "latedef": "nofunc",
-  "unused": true
+  "unused": true,
+  "predef": [
+    "define",
+    "fanplayr"
+  ]
 }

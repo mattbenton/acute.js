@@ -1,25 +1,21 @@
 /* jshint evil:true */
 
-acute.pipes["eval"] = (function () {
-  var interpolateRegExp = /\{\s*([^}]+)\s*\}/;
-  var interpolateRegExpGlobal = /\{\s*([^}]+)\s*\}/g;
+var acute = require("../acute");
 
-  var formatter = {
-    format: function ( value, options, scope, pathObj ) {
-      if ( interpolateRegExp.test(value) ) {
-        return value.replace(interpolateRegExpGlobal, function ( line, source ) {
-          var evalFn = acute.parser.parse(source);
-          if ( pathObj ) {
-            for ( var i = 0, len = evalFn.watches.length; i < len; i++ ) {
-              pathObj[evalFn.watches[i]] = true;
-            }
-          }
-          return evalFn(scope, pathObj);
-        });
+var interpolateRegExp = /\{\s*([^}]+)\s*\}/;
+var interpolateRegExpGlobal = /\{\s*([^}]+)\s*\}/g;
+
+exports.format = function ( value, options, scope, pathObj ) {
+  if ( interpolateRegExp.test(value) ) {
+    return value.replace(interpolateRegExpGlobal, function ( line, source ) {
+      var evalFn = acute.parser.parse(source);
+      if ( pathObj ) {
+        for ( var i = 0, len = evalFn.watches.length; i < len; i++ ) {
+          pathObj[evalFn.watches[i]] = true;
+        }
       }
-      return value;
-    }
-  };
-
-  return formatter;
-}());
+      return evalFn(scope, pathObj);
+    });
+  }
+  return value;
+};
