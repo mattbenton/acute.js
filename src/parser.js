@@ -61,9 +61,14 @@ function parse ( expr ) {
     source = "scope.pipe(" + pipeSource + ", " + source + ", pathObj)";
   }
 
-  var evalFn = new Function("scope, pathObj", "return " + source);
-  evalFn.watches = acute.keys(watchedPaths);
-  cache[expr] = evalFn;
+  var evalFn;
+  try {
+    evalFn = new Function("scope, pathObj", "return " + source);
+    evalFn.watches = acute.keys(watchedPaths);
+    cache[expr] = evalFn;
+  } catch ( ex ) {
+    console.log(ex, source);
+  }
 
   return evalFn;
 }

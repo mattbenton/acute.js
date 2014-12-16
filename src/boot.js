@@ -1,13 +1,14 @@
 (function ( factory ) {
-  if ( typeof fanplayr !== "undefined" && fanplayr.define ) {
-    fanplayr.define("acute", factory);
-  }
-  else if ( typeof define !== "undefined" && define.amd ) {
-    define(factory);
-  }
-  else {
-    this.acute = factory();
-  }
+  // if ( typeof fanplayr !== "undefined" && fanplayr.define ) {
+  //   fanplayr.define(factory);
+  // }
+  // else if ( typeof define !== "undefined" && define.amd ) {
+  //   define(factory);
+  // }
+  // else {
+  //   this.acute = factory();
+  // }
+  define(factory);
 })(function () {
   var acute = require("./acute");
 
