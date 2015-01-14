@@ -138,8 +138,8 @@ Observer.prototype.get = function ( path, withInfo ) {
   var context = this.locals;
   for ( i = 0, len = keys.length; i < len; i++ ) {
     key = keys[i];
-    if ( typeof context === "object" && context.hasOwnProperty(key) ) {
-    // if ( typeof context === "object" ) {
+    // if ( typeof context === "object" && context.hasOwnProperty(key) ) {
+    if ( typeof context === "object" ) {
       context = context[key];
     } else {
       isBroken = true;
@@ -147,15 +147,15 @@ Observer.prototype.get = function ( path, withInfo ) {
     }
   }
 
-  if ( isBroken ) {
+  if ( isBroken || typeof context === "undefined" ) {
     isBroken = false;
     gotLocal = false;
 
     context = this.context;
     for ( i = 0, len = keys.length; i < len; i++ ) {
       key = keys[i];
-      if ( typeof context === "object" && context.hasOwnProperty(key) ) {
-      // if ( typeof context === "object" ) {
+      // if ( typeof context === "object" && context.hasOwnProperty(key) ) {
+      if ( typeof context === "object" ) {
         context = context[key];
       } else {
         isBroken = true;

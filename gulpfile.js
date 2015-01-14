@@ -44,6 +44,7 @@ gulp.task("build", ["lint"], function () {
     // .pipe(gulp.dest("/Users/matt/work/fanplayr/repos/cr/src/platform/vendor"))
     // .pipe(gulp.dest("/Users/matt/work/fanplayr/repos/cr/new/src/services/offers-legacy/vendor"))
     .pipe(gulp.dest("/Users/matt/work/fanplayr/repos/client/src/services/offers-legacy/vendor"))
+    .pipe(gulp.dest("/Users/matt/work/fanplayr/repos/client/src/services/intent/vendor"))
     .pipe(notify("Built: <%= file.relative %>"));
 });
 
