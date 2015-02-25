@@ -77,7 +77,10 @@ RepeatDirective.prototype.addItem = function ( change ) {
 RepeatDirective.prototype.removeItem = function ( change ) {
   var view = change.data.view;
   if ( view ) {
-    view.element.remove();
+    var element = view.element;
+    if ( element && element.parentNode ) {
+      element.parentNode.removeChild(element);
+    }
     view.destroy();
   }
 };
