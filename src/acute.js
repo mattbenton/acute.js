@@ -55,6 +55,8 @@ var acute = module.exports = {
   }
 };
 
+require("./emitter")(acute);
+
 var lodashMethods = [
   // Arrays
   "indexOf",

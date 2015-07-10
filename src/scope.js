@@ -16,6 +16,17 @@ function Scope ( context ) {
 var inDigest = false;
 var allScopes = Scope.all = [];
 
+var emitDigestTimeout;
+function emitDigest () {
+  if ( emitDigestTimeout ) {
+    clearTimeout(emitDigestTimeout);
+  }
+  emitDigestTimeout = setTimeout(function () {
+    emitDigestTimeout = null;
+    acute.emit("digest");
+  }, 200);
+}
+
 Scope.digestAll = function () {
   if ( inDigest ) {
     acute.error("already in main digest!");
@@ -29,6 +40,7 @@ Scope.digestAll = function () {
         }
       }
       inDigest = false;
+      emitDigest();
     } catch ( err ) {
       acute.error("digest error", err);
     }
