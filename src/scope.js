@@ -32,6 +32,7 @@ Scope.digestAll = function () {
     acute.error("already in main digest!");
   } else {
     try {
+      acute.emit("digest:start");
       inDigest = true;
       for ( var i = 0, len = allScopes.length; i < len; i++ ) {
         var scope = allScopes[i];
